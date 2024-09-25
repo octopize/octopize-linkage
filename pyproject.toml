@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "octopize-linkage"
+version = "0.1.0"
+description = ""
+authors = ["Olivier Regnier-Coudert <37863704+olivierabz@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+jupyter = "^1.0.0"
+ipykernel = "^6.29.5"
+pandas = "^2.2.2"
+# pandas = "^1.5"
+
+# lsg = {path = "/Users/olivier/dev/avatar/core", develop = true}
+saiph = "^1.5.9"
+
+matplotlib = "^3.9.1"
+seaborn = "^0.13.2"
+numpy = "==1.26.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
