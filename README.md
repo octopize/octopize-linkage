@@ -8,6 +8,20 @@ poetry lock
 poetry install
 ```
 
+## Run use cases
+
+Use case scripts are available to run all steps in one go and see how the whole pipeline can be executed.
+
+```bash
+poetry run python run_use_case_pra.py
+```
+
+## Run tests 
+
+```bash
+poetry run pytest <test_feature.py>
+```
+
 ## Planned linkage steps
 
 1. Evaluate linkage potential
