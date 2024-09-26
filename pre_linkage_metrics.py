@@ -110,12 +110,14 @@ def contribution_score(*, df: pd.DataFrame, shared_columns: list, target_explain
     if should_consider_missing:
         for col in columns_with_missing:
             contribution_score_all_vars[col] = (contribution_score_all_vars[col] + contribution_score_all_vars[f"{IS_MISSING_VARIABLES_PREFIX}{col}"])/ 2
-    
+            # remove the missing value indicator from the dictionary
+            del contribution_score_all_vars[f"{IS_MISSING_VARIABLES_PREFIX}{col}"]
+
     # Compute the contribution score for the set of selected columns
     selected_columns_contribution_score = np.sum([contribution_score_all_vars[col] for col in shared_columns])
 
     # Compute the relative contribution score for the set of selected columns (relative to the contribution score of the set of all variables)
-    selected_columns_relative_contribution_score = selected_columns_contribution_score / np.sum([contribution_score_all_vars[col] for col in df.columns])
+    selected_columns_relative_contribution_score = selected_columns_contribution_score / np.sum([contribution_score_all_vars[col] for col in contribution_score_all_vars.keys()])
     
     return {
         "selected_columns_contribution_score": selected_columns_contribution_score,
