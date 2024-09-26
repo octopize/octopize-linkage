@@ -4,6 +4,7 @@ tar_option_set(packages =
   c(
     "dplyr"
   , "readr"
+  , "stringr"
   , "janitor"
   )
 )
@@ -35,7 +36,8 @@ list(
     setNames(raw_pra_2023, english_col_names) |>
     clean_names() |>
     filter(reference_quarter == 1) |>
-    select(-level_of_studies_completed) # This variable is completely empty
+    select(-level_of_studies_completed) |> # This variable is completely empty
+    mutate(elevator = str_replace_all(elevator, ",", "."))
   )
 
 , tar_target(
