@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from pre_linkage_metrics import ImputeMethod, contribution_score
+from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables
 
 
 ################################
@@ -63,6 +63,19 @@ print("\n\nContribution score for source 2: \n", contribution_score_dict2)
 print("\n\n We recommend using `selected_columns_relative_contribution_score` which is bounded between 0 and 1:")
 print(f"\n\t score of source 1: {contribution_score_dict1['selected_columns_relative_contribution_score']}")
 print(f"\t score of source 2: {contribution_score_dict2['selected_columns_relative_contribution_score']}")
+
+
+print("\n\n In some cases, we may be interested in getting the best n variables from m variables potentially available.")
+n = 3
+best_variables1 = get_best_n_from_m_variables(contribution_score_dict1['contribution_score_per_variable'], n=n)
+best_variables_from_shared_variables1 = get_best_n_from_m_variables(contribution_score_dict1['contribution_score_per_variable'], n=3, m_variables=shared_columns)
+print(f"\n\tBest {n} variables at source 1: {best_variables1}")
+print(f"\tBest {n} variables from shared variables at source 1: {best_variables_from_shared_variables1}")
+
+best_variables2 = get_best_n_from_m_variables(contribution_score_dict2['contribution_score_per_variable'], n=n)
+best_variables_from_shared_variables2 = get_best_n_from_m_variables(contribution_score_dict2['contribution_score_per_variable'], n=3, m_variables=shared_columns)
+print(f"\tBest {n} variables at source 2: {best_variables2}")
+print(f"\tBest {n} variables from shared variables at source 2: {best_variables_from_shared_variables2}")
 
 ################################
 # Linkage
