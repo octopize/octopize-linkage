@@ -6,6 +6,7 @@ let
       dplyr
       targets
       readr
+      stringr
       janitor;
   };
    
