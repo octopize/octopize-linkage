@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables
+from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables, get_unicity_score
 
 
 ################################
@@ -76,6 +76,13 @@ best_variables2 = get_best_n_from_m_variables(contribution_score_dict2['contribu
 best_variables_from_shared_variables2 = get_best_n_from_m_variables(contribution_score_dict2['contribution_score_per_variable'], n=3, m_variables=shared_columns)
 print(f"\tBest {n} variables at source 2: {best_variables2}")
 print(f"\tBest {n} variables from shared variables at source 2: {best_variables_from_shared_variables2}")
+
+
+n_unique_comb1 = get_unicity_score(df1, shared_columns)
+print(f"\n\tUnicity score of source 1: {n_unique_comb1}")
+
+n_unique_comb2 = get_unicity_score(df2, shared_columns)
+print(f"\tUnicity score of source 2: {n_unique_comb2}")
 
 ################################
 # Linkage

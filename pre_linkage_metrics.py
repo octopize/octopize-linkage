@@ -232,3 +232,25 @@ def get_best_n_from_m_variables(contribution_score_per_variable: Dict[str, float
     best_n_variables = [var for var, _ in sorted_variables[:n]]
 
     return best_n_variables
+
+
+
+def get_unicity_score(df: pd.DataFrame, shared_columns: list) -> float:
+    """Compute the unicity score of the shared columns.
+
+    The unicity score is the ratio of unique combinations of values in the shared columns
+    over the total number of individuals.
+
+    Args:
+        df (pd.DataFrame): 
+            data to consider
+        shared_columns (list): 
+            list of columns to consider
+
+    Returns:
+        float: 
+            unicity score
+    """
+    # get number of unique combinations of values in the shared columns
+    n_unique_comb = (~df.duplicated(shared_columns)).sum()
+    return n_unique_comb / len(df)
