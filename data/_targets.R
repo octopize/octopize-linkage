@@ -102,7 +102,7 @@ list(
       household_duties,
       relation_to_activity1,
       relation_to_activity2,
-    )
+      )
   )
 
 
@@ -125,5 +125,19 @@ list(
       contract_type,
       hours
     )
+  )
+
+, tar_target(
+    pra_A_csv,
+    write.csv(pra_A,
+              "pra_A.csv",
+              row.names = FALSE)
+  )
+
+, tar_target(
+    pra_B_csv,
+    write.csv(pra_B,
+              "pra_B.csv",
+              row.names = FALSE)
   )
 )
