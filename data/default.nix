@@ -12,6 +12,7 @@ let
    
   system_packages = builtins.attrValues {
     inherit (pkgs) 
+      emacs29
       glibcLocales
       nix
       R;
