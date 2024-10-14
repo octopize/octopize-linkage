@@ -12,11 +12,15 @@ df = pd.read_csv("data/pra_2023.csv")
 print(df)
 print(df.columns)
 
+
+
 # drop IDs and constant columns
-df = df.drop(columns=['household_number', 'survey_year'])
+df = df.drop(columns=['household_number', 'survey_year', 'rowid', 'matricule'])
+print(df.dtypes)
+# assert False
 
 # replace comma by dot in column elevator
-df['elevator'] = df['elevator'].str.replace(',', '.').astype(float)
+# df['elevator'] = df['elevator'].str.replace(',', '.').astype(float)
 
 ################################
 # Split data
@@ -24,7 +28,7 @@ df['elevator'] = df['elevator'].str.replace(',', '.').astype(float)
 all_columns = df.columns
 
 # Select common/shared columns
-shared_columns = ['territory', 'sex', 'nationality', 'age', 'main_occupation']
+shared_columns = ['sex', 'nationality', 'age', 'main_occupation']
 
 # Split data into two sources df1 and df2
 columns1 = set(all_columns[:15]).union(set(shared_columns))

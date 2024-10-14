@@ -22,6 +22,14 @@ poetry run python run_use_case_pra.py
 poetry run pytest <test_feature.py>
 ```
 
+## Run anonymization with avatar
+
+Generation of anonymous synthetic data can be done with the solution avatar, provided a license to the avatar solution is in place. 
+
+```bash
+poetry run python anonymize_pra.py
+```
+
 ## Planned linkage steps
 
 1. Evaluate linkage potential
