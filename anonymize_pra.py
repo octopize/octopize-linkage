@@ -28,8 +28,8 @@ password = os.environ.get("AVATAR_PASSWORD")
 client = ApiClient(base_url=url)
 client.authenticate(username=username, password=password)
 
-# source = "pra_A"
-source = "pra_B"
+source = "pra_A"
+# source = "pra_B"
 
 
 ## Data preparation
@@ -124,11 +124,11 @@ unshuffled_avatars_df = client.pandas_integration.download_dataframe(
 )
 
 # Save the avatars to csv files
-avatars_str = avatars_df.to_csv()
+avatars_str = avatars_df.to_csv(index=False)
 with open(f"./data/{source}_avatars.csv", "wb") as f:
     f.write(avatars_str.encode())
 
-unshuffled_avatars_str = unshuffled_avatars_df.to_csv()
+unshuffled_avatars_str = unshuffled_avatars_df.to_csv(index=False)
 with open(f"./data/{source}_unshuffled_avatars.csv", "wb") as f:
     f.write(unshuffled_avatars_str.encode())
 
