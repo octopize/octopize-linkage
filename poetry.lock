@@ -800,6 +800,21 @@ files = [
 ]
 
 [[package]]
+name = "gower"
+version = "0.1.2"
+description = "Python implementation of Gowers distance, pairwise between records in two data sets"
+optional = false
+python-versions = ">=2.7"
+files = [
+    {file = "gower-0.1.2-py3-none-any.whl", hash = "sha256:cb46e18243e1d88d2fa0a23d20afb71e5469f25db4ee6236db40f897dfea9e6f"},
+    {file = "gower-0.1.2.tar.gz", hash = "sha256:34ddb5158f0e8bfba093dca06b9f887bda244998d10af2a3ad8c74a6efa1b5f6"},
+]
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -1870,27 +1885,25 @@ files = [
 
 [[package]]
 name = "octopize-avatar"
-version = "0.15.0"
+version = "0.15.1"
 description = "Python client for Octopize's avatar API"
 optional = false
-python-versions = "^3.9"
-files = []
-develop = true
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "octopize_avatar-0.15.1-py3-none-any.whl", hash = "sha256:de03ded5b782477fe0b9b4b3c11569d3962c2525570b31aa444b25a43dba7661"},
+    {file = "octopize_avatar-0.15.1.tar.gz", hash = "sha256:b29867a7c5d2e9a1234d4806f1b671cd0fab982eb1f049d066f31b75075a303b"},
+]
 
 [package.dependencies]
-clevercsv = "^0.8.2"
+clevercsv = ">=0.8.2,<0.9.0"
 httpx = ">=0.23,<0.28"
 numpy = "<2"
 pandas = "*"
-pyarrow = "^17.0.0"
-pydantic = "^2"
-structlog = "^24.2.0"
-tenacity = "^8.3.0"
-toolz = "^0.12.0"
-
-[package.source]
-type = "directory"
-url = "../avatar/client/build/avatar-python"
+pyarrow = ">=17.0.0,<18.0.0"
+pydantic = ">=2,<3"
+structlog = ">=24.2.0,<25.0.0"
+tenacity = ">=8.3.0,<9.0.0"
+toolz = ">=0.12.0,<0.13.0"
 
 [[package]]
 name = "overrides"
@@ -3028,25 +3041,23 @@ name = "saiph"
 version = "1.5.9"
 description = "A projection package"
 optional = false
-python-versions = ">=3.10,<4.0"
-files = []
-develop = true
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "saiph-1.5.9-py3-none-any.whl", hash = "sha256:04ae28ffaf930b05965e5a7ed10be99108a4fc39e8e10bb84ebc8698b0b7d9d7"},
+    {file = "saiph-1.5.9.tar.gz", hash = "sha256:f36b746cc4336f1dcc8eebd3e2a9be2f83352356ae5a226a512882d359c8ab30"},
+]
 
 [package.dependencies]
-msgspec = "^0.18.5"
-numpy = "^1"
-pandas = "2.*"
-pydantic = "^2"
-scikit-learn = "^1.0"
-scipy = "^1.14"
-toolz = "0.*"
+msgspec = ">=0.18.5,<0.19.0"
+numpy = ">=1,<2"
+pandas = ">=2.2.2"
+pydantic = ">=2,<3"
+scikit-learn = ">=1.0,<2.0"
+scipy = ">=1.14,<2.0"
+toolz = "<1.0.0"
 
 [package.extras]
 matplotlib = ["matplotlib (>=3.5.2,<4.0.0)"]
-
-[package.source]
-type = "directory"
-url = "../saiph"
 
 [[package]]
 name = "scikit-learn"
@@ -3522,4 +3533,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "262ee0012162109d0e8f96493063e9dfd2ac4123786a537bda829539d358f485"
+content-hash = "245626fa45d848e7c25876bc0d4a381f25fc1266d6bcb6aa92bea75177b013aa"

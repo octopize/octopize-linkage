@@ -19,9 +19,10 @@ saiph = "^1.5.9"
 #saiph = "^1.5.4"
 # saiph = {path = "/Users/olivier/dev/saiph", develop = true}
 
-# octopize-avatar = "^0.15.0"
-octopize-avatar = {path = "/Users/olivier/dev/avatar/client/build/avatar-python", develop = true}
+octopize-avatar = "^0.15.1"
+# octopize-avatar = {path = "/Users/olivier/dev/avatar/client/build/avatar-python", develop = true}
 
+gower = "^0.1.2"
 
 matplotlib = "^3.9.1"
 seaborn = "^0.13.2"
