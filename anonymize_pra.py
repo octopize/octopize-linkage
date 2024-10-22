@@ -44,9 +44,7 @@ for col in should_be_categorical_columns:
     df[col] = df[col].astype(object)
 
 
-
 ## Data loading
-
 dataset = client.pandas_integration.upload_dataframe(df)
 dataset = client.datasets.analyze_dataset(dataset.id)
 print(f"Lines: {dataset.nb_lines}, dimensions: {dataset.nb_dimensions}")
