@@ -3,21 +3,15 @@
 import pandas as pd
 
 from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables, get_unicity_score
-
+from linkage import Distance, link_datasets, LinkingAlgorithm
 
 ################################
 # Load and prepare data
 ################################
 df = pd.read_csv("data/pra_2023.csv")
-print(df)
-print(df.columns)
-
-
 
 # drop IDs and constant columns
 df = df.drop(columns=['household_number', 'survey_year', 'rowid', 'matricule'])
-print(df.dtypes)
-# assert False
 
 # replace comma by dot in column elevator
 # df['elevator'] = df['elevator'].str.replace(',', '.').astype(float)
@@ -28,7 +22,7 @@ print(df.dtypes)
 all_columns = df.columns
 
 # Select common/shared columns
-shared_columns = ['sex', 'nationality', 'age', 'main_occupation']
+shared_columns = ['sex', 'nationality', 'age', 'province', 'place_birth']
 
 # Split data into two sources df1 and df2
 columns1 = set(all_columns[:15]).union(set(shared_columns))
@@ -92,6 +86,29 @@ print(f"\tUnicity score of source 2: {n_unique_comb2}")
 # Linkage
 ################################
 
+# load avatars from both sources
+df1_avatars = pd.read_csv("data/pra_A_unshuffled_avatars.csv")
+df2_avatars = pd.read_csv("data/pra_B_unshuffled_avatars.csv")
+
+should_be_categorical_columns_1 = ['nationality', 'place_birth', 'sex', 'province', 'household_duties', 'relation_to_activity1', 'relation_to_activity2']
+should_be_categorical_columns_2 = ['nationality', 'place_birth', 'sex', 'province', 'relationship', 'main_occupation', 'availability', 'search_work', 'search_reason', 'search_steps', 'search_method', 'main_activity', 'main_prof_situation' ,'main_sector' ,'contract_type']
+
+for col in should_be_categorical_columns_1:
+    df1_avatars[col] = df1_avatars[col].astype(object)
+for col in should_be_categorical_columns_2:
+    df2_avatars[col] = df2_avatars[col].astype(object)
+
+
+# link the two sources
+distance=Distance.PROJECTION_DIST_ALL_SOURCES
+# linking_algo=LinkingAlgorithm.MIN_REORDER
+linking_algo=LinkingAlgorithm.MIN_ORDER
+
+# linked_df = link_datasets(df1_avatars, df2_avatars, shared_columns, distance=Distance.ROW_ORDER, linking_algo=LinkingAlgorithm.LSA)
+linked_df = link_datasets(df1_avatars, df2_avatars, shared_columns, distance=distance, linking_algo=linking_algo)
+
+linked_df.to_csv(f"data/pra_linked_data__avatar__{linking_algo.value}__{distance.value}.csv", index=False)
+print("\n\nLinked data: \n", linked_df)
 
 ################################
 #Post-linkage metrics
