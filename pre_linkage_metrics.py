@@ -202,3 +202,55 @@ def enrich_df_with_is_missing_variables(df: pd.DataFrame) -> pd.DataFrame:
     df_enriched = df_enriched.drop(columns=columns_to_remove)
 
     return df_enriched
+
+
+def get_best_n_from_m_variables(contribution_score_per_variable: Dict[str, float], n: int, m_variables: Optional[List[str]] = None) -> List[str]:
+    """Get the best n variables from m variables potentially available.
+
+    Args:
+        contribution_score_per_variable (Dict[str, float]): 
+            dictionary containing the contribution score for each variable
+        n (int): 
+            number of variables to select
+        m_variables (Optional[List[str]], optional): 
+            list of variables to consider. If None, all variables are considered. Defaults to None.
+
+    Returns:
+        List[str]: 
+            list of the best n variables
+    """
+    if m_variables is None:
+        m_variables = list(contribution_score_per_variable.keys())
+    
+    # filter variables
+    selected_contribution_score_per_variable = {var: score for var, score in contribution_score_per_variable.items() if var in m_variables}
+    print('selected_contribution_score_per_variable', selected_contribution_score_per_variable)
+    # sort variables by contribution score
+    sorted_variables = sorted(selected_contribution_score_per_variable.items(), key=lambda x: x[1], reverse=True)
+
+    # get the best n variables
+    best_n_variables = [var for var, _ in sorted_variables[:n]]
+
+    return best_n_variables
+
+
+
+def get_unicity_score(df: pd.DataFrame, shared_columns: list) -> float:
+    """Compute the unicity score of the shared columns.
+
+    The unicity score is the ratio of unique combinations of values in the shared columns
+    over the total number of individuals.
+
+    Args:
+        df (pd.DataFrame): 
+            data to consider
+        shared_columns (list): 
+            list of columns to consider
+
+    Returns:
+        float: 
+            unicity score
+    """
+    # get number of unique combinations of values in the shared columns
+    n_unique_comb = (~df.duplicated(shared_columns)).sum()
+    return n_unique_comb / len(df)
