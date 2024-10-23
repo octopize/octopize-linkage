@@ -75,6 +75,8 @@ def link_datasets(
         LinkingAlgorithm.MIN_REORDER: _solve_min_reorder,
     }
     row_ind, col_ind = linkage_algos[linking_algo](distances)
+    print("row_ind:", row_ind[:10])
+    print("col_ind:", col_ind[:10])
 
     # Prepare columns to add to the df. Need to keep the column name order
     cols_to_add = filter(lambda col: col not in df1.columns, df2.columns)
@@ -201,20 +203,36 @@ def _solve_min_order(distances: NDArray[np.float64]) -> Tuple[List[int], List[in
     # Order once records in order of min distance to another record, then assign
     # to closest record, respecting this order (greedy)
     min_values = [(i, min(distances[i])) for i in range(len(distances))]
+    # print('min_values:', min_values)
     min_values = sorted(min_values, key=lambda tup: (tup[1]))
+    # print('min_values_sorted:', min_values)
     insertion_order = [x[0] for x in min_values]
+    # print('insertion_order:', insertion_order)
 
-    row_ind = set()
-    col_ind = set()
+    # row_ind = set()
+    # col_ind = set()
+    row_ind = []
+    col_ind = []
     max_val = math.ceil(np.max(distances) + 1.0)
     for i in range(np.shape(distances)[1]):
-        row_ind.add(insertion_order[i])
+        # print('---------------')
+        # print(i, len(col_ind))
+        row_ind.append(insertion_order[i])
+        # print(insertion_order[i])
+
+        # replace already drawn columns with max value
+        col_ind_as_set = set(col_ind)
         tmp = [
-            distances[insertion_order[i]][j] if (j not in col_ind) else max_val
+            distances[insertion_order[i]][j] if (j not in col_ind_as_set) else max_val
             for j in range(len(distances[insertion_order[i]]))
         ]
+        # print('tmp:', tmp)
+        # draw column with minimum distance
         val = np.argmin(tmp)
-        col_ind.add(val)
+        # print('val:', val)
+        col_ind.append(val)
+        # if i ==4:
+        #     break
     return list(row_ind), list(col_ind)  # type: ignore
 
 
