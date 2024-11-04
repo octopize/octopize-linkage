@@ -102,7 +102,7 @@ for col in should_be_categorical_columns_2:
 # link the two sources
 distance=Distance.PROJECTION_DIST_ALL_SOURCES
 # linking_algo=LinkingAlgorithm.MIN_REORDER
-linking_algo=LinkingAlgorithm.MIN_ORDER
+linking_algo=LinkingAlgorithm.LSA
 
 # linked_df = link_datasets(df1_avatars, df2_avatars, shared_columns, distance=Distance.ROW_ORDER, linking_algo=LinkingAlgorithm.LSA)
 linked_df = link_datasets(df1_avatars, df2_avatars, shared_columns, distance=distance, linking_algo=linking_algo)

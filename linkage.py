@@ -9,7 +9,7 @@ import saiph
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics.pairwise import euclidean_distances
 
-from pre_linkage_metrics import _CATEGORICAL_DTYPES
+from pre_linkage_metrics import _CATEGORICAL_DTYPES, ImputeMethod, enrich_df_with_is_missing_variables, impute_missing_values
 
 
 class Distance(Enum):
@@ -75,8 +75,6 @@ def link_datasets(
         LinkingAlgorithm.MIN_REORDER: _solve_min_reorder,
     }
     row_ind, col_ind = linkage_algos[linking_algo](distances)
-    print("row_ind:", row_ind[:10])
-    print("col_ind:", col_ind[:10])
 
     # Prepare columns to add to the df. Need to keep the column name order
     cols_to_add = filter(lambda col: col not in df1.columns, df2.columns)
@@ -117,6 +115,12 @@ def _compute_random_distances(
 def _compute_gower_distances(
     df1: pd.DataFrame, df2: pd.DataFrame, linkage_var: List[str]
 ) -> NDArray[np.float64]:
+    
+
+    dfs = _handle_missing_values([df1[linkage_var], df2[linkage_var]])
+    df1 = dfs[0]
+    df2 = dfs[1]
+
     # convert input data to correct type and keep only linkage variables
     data_x: NDArray[Union[np.float64, np.str_]] = np.asarray(
         _convert_int_to_float(df1[linkage_var])
@@ -175,17 +179,47 @@ def _compute_euclidean_allsources_projection_distances(
     return _compute_euclidean_projection_distances(df_train, to_transform_dfs)
 
 
+def _handle_missing_values(dfs: List[pd.DataFrame]) -> List[pd.DataFrame]:
+    _dfs = []
+    for df in dfs:
+        _dfs.append(df.copy())
+
+    df_concat = pd.concat(_dfs, axis=0, ignore_index=True)
+
+    columns_with_missing = df_concat.columns[df_concat.isnull().any()].tolist()
+    if len(columns_with_missing) > 0:
+        # Add (if required) columns indicating if a variable was missing
+        df_concat = enrich_df_with_is_missing_variables(df_concat)
+        # Impute missing values (because PCA-like methods require no missing values)
+        df_concat = impute_missing_values(df_concat, impute_method=ImputeMethod.MEDIAN)
+    
+    # un-concat the dataframes
+    _dfs = []
+    current_index = 0
+    for df in dfs:
+        _dfs.append(df_concat.iloc[current_index: current_index + len(df)])
+        current_index += len(df)
+    
+    return _dfs
+
 def _compute_euclidean_projection_distances(
     df_train: pd.DataFrame, to_transform_dfs: List[pd.DataFrame]
 ) -> NDArray[np.float64]:
 
+    dfs = _handle_missing_values([df_train, *to_transform_dfs])
+    for i in range(len(dfs)):
+        dfs[i] = dfs[i].reset_index(drop=True)
+
+    _df_train = dfs[0]
+    _to_transform_dfs = dfs[1:]
+    
     # fit PCA / FAMD
-    model = saiph.fit(df_train)
+    model = saiph.fit(_df_train)
 
     # for each source, project a sub df composed of the linkage_var only
     projections = []
-    projections.append(saiph.transform(to_transform_dfs[0], model))
-    projections.append(saiph.transform(to_transform_dfs[1], model))
+    projections.append(saiph.transform(_to_transform_dfs[0], model))
+    projections.append(saiph.transform(_to_transform_dfs[1], model))
 
     # compute pairwise euclidean distance between projections
     distances: NDArray[np.float64] = euclidean_distances(projections[0], projections[1])
