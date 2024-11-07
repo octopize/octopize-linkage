@@ -1,12 +1,30 @@
 # octopize-linkage
 
 ## Setup
-Dependencies are managed with poetry. Installation steps are given below:
+Dependencies are managed with poetry and nix. Installation steps are given below:
+
+### poetry
 
 ```bash
 poetry lock
 poetry install
 ```
+
+### nix
+
+A `default.nix` is provided at the root of the project. Build the environment using:
+
+```bash
+nix-build
+```
+
+Drop into an interactive shell using:
+
+```bash
+nix-shell
+```
+
+From this shell, you can start your IDE which should then have access to the packages.
 
 ## Run use cases
 
@@ -14,6 +32,12 @@ Use case scripts are available to run all steps in one go and see how the whole 
 
 ```bash
 poetry run python run_use_case_pra.py
+```
+
+or, if you’re using nix:
+
+```bash
+nix-shell --run 'python run_use_case_pra.py'
 ```
 
 ## Run tests 
@@ -29,6 +53,7 @@ Generation of anonymous synthetic data can be done with the solution avatar, pro
 ```bash
 poetry run python anonymize_pra.py
 ```
+
 
 ## Planned linkage steps
 
