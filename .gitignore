@@ -1,4 +1,6 @@
 _targets
 afi_synth
+afi_synth_A_avatars.csv
+afi_synth_B_avatars.csv
 result
 __pycache__
