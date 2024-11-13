@@ -22,9 +22,10 @@ for col in should_be_categorical_columns_2:
 # Select common/shared columns
 shared_columns = should_be_categorical_columns_1
 
-linkage_algos = [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
-# linkage_algos = [LinkingAlgorithm.LSA]
-distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+#linkage_algos = [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
+linkage_algos = [LinkingAlgorithm.LSA]
+#distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+distances = [Distance.GOWER]
 # distances = [Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.RANDOM]
 # linkage_algos = [LinkingAlgorithm.MIN_ORDER]
 # distances = [Distance.RANDOM]
