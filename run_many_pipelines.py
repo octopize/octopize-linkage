@@ -5,7 +5,7 @@ import random
 import numpy as np
 import pandas as pd
 
-from post_linkage_metrics import generate_projection_plot, get_correlations, get_non_shared_var_projections, plot_correlations
+from post_linkage_metrics import generate_projection_plot, get_correlations, get_non_shared_var_projections, get_reconstruction_score, plot_correlations
 from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables, get_unicity_score
 from linkage import Distance, link_datasets, LinkingAlgorithm
 
@@ -105,7 +105,8 @@ stats = {
     "ava_ori": [],
     "distance": [],
     "linkage_algo": [],
-    "corr_diff_sum": []
+    "corr_diff_sum": [],
+    "reconstruction_score": []
 }
 
 for combination_i, shared_columns in enumerate(random_columns_combinations):
@@ -240,6 +241,10 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
                 plt = generate_projection_plot(proj_original, proj_linked, title=f"Projection of non-shared variables for {linkage_algo}/{distance}")
                 plt.savefig(f"data/pra_linked_data__avatar__{linkage_algo.value}__{distance.value}_non_shared_var_projections.png")
 
+
+                reconstruction_score = get_reconstruction_score(df, linked_df)
+                print(f"reconstruction_score: {reconstruction_score}")
+
                 stats["combination_id"].append(combination_i)
                 stats["number_of_shared_variables"].append(len(shared_columns))
                 stats["total_number_variables"].append(len(all_columns))
@@ -251,6 +256,7 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
                 stats["distance"].append(distance.value)
                 stats["linkage_algo"].append(linkage_algo.value)
                 stats["corr_diff_sum"].append(corr_diff.sum().sum())
+                stats["reconstruction_score"].append(reconstruction_score)
                 stats["ava_ori"].append(ori_ava)
 
                 stats_df = pd.DataFrame(stats)

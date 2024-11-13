@@ -1,8 +1,15 @@
-"""Example of how to call the different bricks on the PRA dataset."""
-
 import pandas as pd
 
-file_path = "data/many_pipeline_stats_20241031_160605.csv"
+file_path = "data/many_pipeline_stats_20241113_102244.csv"
+
+post_linkage_metric = "correlation_retention"
+# post_linkage_metric = "reconstruction_score"
+
+pre_linkage_metrics = "unicity_score1"
+# pre_linkage_metrics = "contribution_score1"
+
+
+
 stats_df = pd.read_csv(file_path)
 # stats_df['correlation_retention'] = 100 - stats_df['corr_diff_sum']
 
@@ -24,7 +31,6 @@ print(stats_df)
 
 
 
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -40,24 +46,21 @@ import matplotlib.pyplot as plt
 ##########################################
 
 data = stats_df[stats_df['ava_ori'] == 'avatars']
-sns.lmplot(data=data, x='unicity_score1', y='correlation_retention', hue='distance', scatter=True)
-
-plt.xlabel('Unicity Score')
-plt.ylabel('Correlation Retention')
-plt.title('Correlation_retention vs Unicity Score for Each Distance on Avatars')
+sns.lmplot(data=data, x=pre_linkage_metrics, y=post_linkage_metric, hue='distance', scatter=True)
+plt.xlabel(pre_linkage_metrics)
+plt.ylabel(post_linkage_metric)
+plt.title(f'{post_linkage_metric} vs {pre_linkage_metrics} for Each Distance on Avatars')
 plt.legend(title='Linkage Algorithm')
 plt.show()
 
 
 data = stats_df[stats_df['ava_ori'] == 'original']
-sns.lmplot(data=data, x='unicity_score1', y='correlation_retention', hue='distance', scatter=True)
-
-plt.xlabel('Unicity Score')
-plt.ylabel('Correlation Retention')
-plt.title('Correlation_retention vs Unicity Score for Each Distance on Originals')
+sns.lmplot(data=data, x=pre_linkage_metrics, y=post_linkage_metric, hue='distance', scatter=True)
+plt.xlabel(pre_linkage_metrics)
+plt.ylabel(post_linkage_metric)
+plt.title(f'{post_linkage_metric} vs {pre_linkage_metrics} for Each Distance on Originals')
 plt.legend(title='Linkage Algorithm')
 plt.show()
-
 
 
 
@@ -71,24 +74,24 @@ plt.show()
 ###    - done by comparing the plot obtained by linking avatars and original
 ##########################################
 
-data = stats_df[stats_df['ava_ori'] == 'avatars']
-sns.lmplot(data=data, x='contribution_score1', y='correlation_retention', hue='distance', scatter=True)
+# data = stats_df[stats_df['ava_ori'] == 'avatars']
+# sns.lmplot(data=data, x='contribution_score1', y='correlation_retention', hue='distance', scatter=True)
 
-plt.xlabel('Contribution Score')
-plt.ylabel('Correlation Retention')
-plt.title('Correlation_retention vs Contribution Score for Each Distance on Avatars')
-plt.legend(title='Linkage Algorithm')
-plt.show()
+# plt.xlabel('Contribution Score')
+# plt.ylabel('Correlation Retention')
+# plt.title('Correlation_retention vs Contribution Score for Each Distance on Avatars')
+# plt.legend(title='Linkage Algorithm')
+# plt.show()
 
 
-data = stats_df[stats_df['ava_ori'] == 'original']
-sns.lmplot(data=data, x='contribution_score1', y='correlation_retention', hue='distance', scatter=True)
+# data = stats_df[stats_df['ava_ori'] == 'original']
+# sns.lmplot(data=data, x='contribution_score1', y='correlation_retention', hue='distance', scatter=True)
 
-plt.xlabel('Contribution Score')
-plt.ylabel('Correlation Retention')
-plt.title('Correlation_retention vs Contribution Score for Each Distance on Originals')
-plt.legend(title='Linkage Algorithm')
-plt.show()
+# plt.xlabel('Contribution Score')
+# plt.ylabel('Correlation Retention')
+# plt.title('Correlation_retention vs Contribution Score for Each Distance on Originals')
+# plt.legend(title='Linkage Algorithm')
+# plt.show()
 
 
 
@@ -98,15 +101,12 @@ plt.show()
 ##########################################
 
 data = stats_df
+plt.figure(figsize=(10, 6))
 sns.scatterplot(data=data, x='unicity_score1', y='contribution_score1', hue='distance')
 plt.xlabel('Unicity score')
 plt.ylabel('Contribution score')
 plt.title('Unicity score vs. Contribution score')
-# plt.legend(title='Linkage Algorithm')
 plt.show()
-
-
-
 
 
 ##########################################
@@ -131,16 +131,16 @@ markers_dict = {
 for name, group in grouped:
     # sns.lineplot(data=group, x='unicity_score1', y='correlation_retention', style='ava_ori', markers=markers_dict, label=name)
     # sns.lineplot(data=group, x='unicity_score1', y='correlation_retention', style='ava_ori', markers=markers_dict)
-    sns.lineplot(data=group, x='unicity_score1', y='correlation_retention', markers=markers_dict, style='ava_ori')
+    sns.lineplot(data=group, x=pre_linkage_metrics, y=post_linkage_metric, markers=markers_dict, style='ava_ori')
     # sns.lineplot(data=group, x='unicity_score1', y='correlation_retention', marker='o', label=name)
     # Add arrowhead
-    plt.annotate('', xy=(group['unicity_score1'].iloc[-1], group['correlation_retention'].iloc[-1]), 
-                 xytext=(group['unicity_score1'].iloc[-2], group['correlation_retention'].iloc[-2]),
+    plt.annotate('', xy=(group[pre_linkage_metrics].iloc[-1], group[post_linkage_metric].iloc[-1]), 
+                 xytext=(group[pre_linkage_metrics].iloc[-2], group[post_linkage_metric].iloc[-2]),
                  arrowprops=dict(arrowstyle="->", color='blue'))
 
-plt.xlabel('Unicity Score')
-plt.ylabel('Correlation Retention')
-plt.title('Correlation Retention for different data splits\n showing linkage done on avatars and original data\n (original --> avatar)')
+plt.xlabel(pre_linkage_metrics)
+plt.ylabel(post_linkage_metric)
+plt.title(f'{post_linkage_metric} for different data splits\n showing linkage done on avatars and original data\n (original --> avatar)')
 plt.legend([],[], frameon=False)  # Hide the legend
 
 plt.show()
@@ -176,17 +176,17 @@ color_map = dict(zip(data['distance'].unique(), palette))
 # Plot the data points with different colors based on the distance
 for distance in data['distance'].unique():
     subset = data[data['distance'] == distance]
-    ax.scatter(subset['unicity_score1'], subset['contribution_score1'], subset['correlation_retention'], 
+    ax.scatter(subset['unicity_score1'], subset['contribution_score1'], subset[post_linkage_metric], 
                c=[color_map[distance]], label=distance, marker='o')
 
 
 # ax.scatter(data['unicity_score1'], data['contribution_score1'], data['correlation_retention'], c='b', marker='o')
 
 # Set labels
-ax.set_xlabel('Unicity Score')
+ax.set_xlabel(pre_linkage_metrics)
 ax.set_ylabel('Contribution Score')
-ax.set_zlabel('Correlation Retention')
-ax.set_title('3D Plot of Unicity Score, Contribution Score, and Correlation Retention')
+ax.set_zlabel(post_linkage_metric)
+ax.set_title(f'3D Plot of {pre_linkage_metrics}, Contribution Score, and {post_linkage_metric}')
 
 # Show legend
 ax.legend(title='Distance')

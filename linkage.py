@@ -115,14 +115,23 @@ def _compute_random_distances(
 def _compute_gower_distances(
     df1: pd.DataFrame, df2: pd.DataFrame, linkage_var: List[str]
 ) -> NDArray[np.float64]:
+    df1 = df1.copy()
+    df2 = df2.copy()
     
+    # if len(df1) == 1:
+    #     differences = df1.compare(df2, keep_equal=False)
+    #     print("OHHHH: ", differences)
+    #     print('ADiff: ', differences.iloc[1].reset_index(drop=False))
+    #     print('ADiff self: ', type(differences.iloc[0].reset_index(drop=False).iloc[0][1]))
+    #     print('ADiff other: ', type(differences.iloc[0].reset_index(drop=False).iloc[1][1]))
 
     dfs = _handle_missing_values([df1[linkage_var], df2[linkage_var]])
-    df1 = dfs[0]
-    df2 = dfs[1]
+    
+    df1 = dfs[0].reset_index(drop=True)
+    df2 = dfs[1].reset_index(drop=True)
 
     # convert input data to correct type and keep only linkage variables
-    data_x: NDArray[Union[np.float64, np.str_]] = np.asarray(
+    data_x: NDArray[Union[np.float64, np.str_]] = np.asarray(   
         _convert_int_to_float(df1[linkage_var])
     )
     data_y: NDArray[Union[np.float64, np.str_]] = np.asarray(
@@ -136,10 +145,19 @@ def _compute_gower_distances(
         include=_CATEGORICAL_DTYPES,
     ).columns.to_list()
     cat_features = [col in categorical for col in df1[linkage_var].columns]
+    
+    # print('categorical:', categorical)
+    # print('cat_features:', cat_features)
 
+    # print(data_x[1])
+    # print(data_y[1])
+    
     distances: NDArray[np.float64] = gower.gower_matrix(
         data_x=data_x, data_y=data_y, cat_features=cat_features
     )
+
+    # print(distances)
+
     return distances
 
 
@@ -179,7 +197,7 @@ def _compute_euclidean_allsources_projection_distances(
     return _compute_euclidean_projection_distances(df_train, to_transform_dfs)
 
 
-def _handle_missing_values(dfs: List[pd.DataFrame]) -> List[pd.DataFrame]:
+def _handle_missing_values(dfs: List[pd.DataFrame], cast_bool_as = 'object') -> List[pd.DataFrame]:
     _dfs = []
     for df in dfs:
         _dfs.append(df.copy())
@@ -193,6 +211,10 @@ def _handle_missing_values(dfs: List[pd.DataFrame]) -> List[pd.DataFrame]:
         # Impute missing values (because PCA-like methods require no missing values)
         df_concat = impute_missing_values(df_concat, impute_method=ImputeMethod.MEDIAN)
     
+    for col in df_concat.columns:
+        if df_concat[col].dtype == 'bool':
+            df_concat[col] = df_concat[col].astype(cast_bool_as)
+
     # un-concat the dataframes
     _dfs = []
     current_index = 0

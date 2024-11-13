@@ -130,3 +130,11 @@ def test_linkage(
         "source_1",
         "source_2",
     }
+
+
+def test_gower_distance_diag_zero() -> None:
+    """The gower_matrix function crashes if passed only int values. Tests it does not occur."""
+    df1 = pd.DataFrame({"v1": [0, 1, 4, 5, 6, 3, np.nan, 2, 1], "v2": [1, 2, 2, 4, 1, 3, 2, 2, 1]})
+    val = _compute_gower_distances(df1, df1, linkage_var=["v1", "v2"])
+    expected: NDArray[np.float64] = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
+    assert np.array_equal(np.diag(val), expected)
