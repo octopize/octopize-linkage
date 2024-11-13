@@ -141,31 +141,5 @@ list(
               row.names = FALSE)
   )
 
-, tar_target(
-    afi_synth_path,
-    "afi_synth"
-  )
-
-, tar_target(
-    afi_synth_raw,
-    readRDS(afi_synth_path)
-  )
-
-, tar_target(
-    afi_synth,
-    filter(afi_synth_raw, annee_aca == "2023-2024")
-  )
-
-, tar_target(
-    afi_synth_A_clear,
-    select(afi_synth,
-           anonymous_id,
-           nationalite,
-           pays_residence,
-           sexe,
-           diplome,
-           domaine_formation
-           )
-  )
 )
 
