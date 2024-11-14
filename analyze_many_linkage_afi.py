@@ -1,4 +1,4 @@
-"""Example of how to call the different bricks on the PRA dataset."""
+"""Example of how to call the different bricks on the AFI dataset."""
 
 import pandas as pd
 
@@ -29,7 +29,7 @@ stats = {
 #### Get statistics from original unified AFI data
 original_df = pd.read_csv("data/afi_clear.csv")
 # drop IDs and constant columns
-original_df = original_df.drop(columns=['household_number', 'survey_year', 'rowid', 'matricule'])
+original_df = original_df.drop(columns=['anonymous_id'])
 
 for col in should_be_categorical_columns_1:
     original_df[col] = original_df[col].astype(object)
@@ -61,8 +61,11 @@ stats["corr_diff_sum"].append(0)
 
 #### Get statistics from each anonymized+linked PRA data
 
-linkage_algos = [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
-distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+linkage_algos = [LinkingAlgorithm.LSA]
+distances = [Distance.GOWER]
+
+#linkage_algos = [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
+#distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
 
 # linkage_algos = [LinkingAlgorithm.LSA]
 # distances = [Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.RANDOM]
@@ -74,7 +77,7 @@ distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PRO
 for linkage_algo in linkage_algos:
     for distance in distances:
         df = pd.read_csv(f"data/afi_linked_data__avatar__{linkage_algo.value}__{distance.value}.csv")
-        
+
         for col in should_be_categorical_columns_1:
             df[col] = df[col].astype(object)
         for col in should_be_categorical_columns_2:
@@ -107,3 +110,7 @@ for linkage_algo in linkage_algos:
 
 stats_df = pd.DataFrame(stats)
 print(stats_df)
+
+#    ava_ori  distance linkage_algo  corr_diff_sum
+#0  original  unlinked     unlinked       0.000000
+#1   avatars     gower          lsa       1.776225
