@@ -54,6 +54,32 @@ Generation of anonymous synthetic data can be done with the solution avatar, pro
 poetry run python anonymize_pra.py
 ```
 
+## Run linkages
+
+The run_many_linkage.py script can be used to perform linkage between two datasets (anonymized or original). It enables analysis of a specific use case under different linkage settings (different distances and algorithms).
+The script generates csv files of the linked data.
+
+```bash
+poetry run python run_many_linkage.py
+nix-shell --run 'python run_many_linkage.py'
+```
+
+## Analyze linkages
+
+The analyze_many_linkage.py script can be used to analyse the results obtained in the previous step (`run_many_linkage.py`).
+If `random` and `row_order` distances have been included in the runs, then any other method can be compared to a close-to-ideal linkage (`row_order`) and to a bad linkage (`random`).
+
+Make sure the selected settings match those of `run_many_linkage.py`.
+
+```bash
+poetry run python analyze_many_linkage.py
+nix-shell --run 'python analyze_many_linkage.py'
+```
+
+## Run and analyze many scenarios (for experimental purposes)
+
+TODO ...
+
 
 ## Planned linkage steps
 

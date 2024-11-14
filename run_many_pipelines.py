@@ -1,4 +1,4 @@
-"""Example of how to call the different bricks on the PRA dataset."""
+"""Script performing linkage under different settings for different scenarios and different datasets."""
 
 import os
 import random
@@ -6,18 +6,15 @@ import numpy as np
 import pandas as pd
 
 from post_linkage_metrics import generate_projection_plot, get_correlations, get_non_shared_var_projections, get_reconstruction_score, plot_correlations
-from pre_linkage_metrics import ImputeMethod, contribution_score, get_best_n_from_m_variables, get_unicity_score
+from pre_linkage_metrics import ImputeMethod, contribution_score, get_unicity_score
 from linkage import Distance, link_datasets, LinkingAlgorithm
 
 from avatars.client import ApiClient
 from avatars.models import (
     AvatarizationJobCreate,
     AvatarizationParameters,
-    ReportCreate,
     PrivacyMetricsJobCreate,
     PrivacyMetricsParameters,
-    SignalMetricsJobCreate,
-    SignalMetricsParameters,
 )
 
 ################################
@@ -34,7 +31,6 @@ password = os.environ.get("AVATAR_PASSWORD")
 
 client = ApiClient(base_url=url)
 client.authenticate(username=username, password=password)
-
 
 ################################
 # Load and prepare data
@@ -60,10 +56,9 @@ for col in should_be_categorical_columns:
 
 all_columns = list(df.columns)
 
-number_of_random_column_combinations = 10
+number_of_random_column_combinations = 1
 min_number_of_random_column_in_combinations = 2
 max_number_of_random_column_in_combinations = 8
-# max_number_of_random_column_in_combinations = len(all_columns)
 
 # get a random sample of columns
 random_columns_combinations = []
@@ -84,14 +79,11 @@ with open(f"data/random_column_combinations_{date}.txt", "w") as f:
 print("combination_dict: ", combination_dict)
 
 
-LINK_ORI_AVA = ["original", "avatars"]
-# linkage_algos = [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
-linkage_algos = [LinkingAlgorithm.LSA]
-
-# distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+LINK_ORI_AVA = ["avatars", "original"]
+linkage_algos = [LinkingAlgorithm.LSA] # [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
 distances = [Distance.GOWER, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
-# distances = [Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
-# distances = [Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER]
+# distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+
 should_shuffle_before_linkage = True
 
 stats = {
@@ -106,13 +98,13 @@ stats = {
     "distance": [],
     "linkage_algo": [],
     "corr_diff_sum": [],
-    "reconstruction_score": []
+    "reconstruction_score": [],
+    "hr1": [],
+    "hr2": [],
+    "hr_linked": []
 }
 
 for combination_i, shared_columns in enumerate(random_columns_combinations):
-    # shared_columns = ['sex', 'nationality', 'age', 'province', 'place_birth']  # DEBUG
-
-    print("shared_columns: ", shared_columns)
     ################################
     # Split data
     ################################
@@ -147,7 +139,23 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
             avatarization_job1 = client.jobs.get_avatarization_job(
                 avatarization_job1.id, timeout=1800
             )
-            print(avatarization_job1.status)
+            print("Avatarization1 job status:", avatarization_job1.status)
+
+            privacy_job1 = client.jobs.create_privacy_metrics_job(
+                PrivacyMetricsJobCreate(
+                    parameters=PrivacyMetricsParameters(
+                        original_id=dataset1.id,
+                        unshuffled_avatars_id=avatarization_job1.result.sensitive_unshuffled_avatars_datasets.id,
+                        use_categorical_reduction=True
+                    ),
+                )
+            )
+
+            privacy_job1 = client.jobs.get_privacy_metrics(privacy_job1.id, timeout=1800)
+            print("Privacy1 job status:", privacy_job1.status)
+            hr1 = privacy_job1.result.hidden_rate
+            # for metric in privacy_job1.result:
+            #     print(metric)
 
 
             ################################
@@ -169,7 +177,20 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
             avatarization_job2 = client.jobs.get_avatarization_job(
                 avatarization_job2.id, timeout=1800
             )
-            print(avatarization_job2.status)
+            print("Avatarization2 job status:", avatarization_job2.status)
+
+            privacy_job2 = client.jobs.create_privacy_metrics_job(
+                PrivacyMetricsJobCreate(
+                    parameters=PrivacyMetricsParameters(
+                        original_id=dataset2.id,
+                        unshuffled_avatars_id=avatarization_job2.result.sensitive_unshuffled_avatars_datasets.id,
+                        use_categorical_reduction=True
+                    ),
+                )
+            )
+            privacy_job2 = client.jobs.get_privacy_metrics(privacy_job2.id, timeout=1800)
+            print("Privacy2 job status:", privacy_job2.status)
+            hr2 = privacy_job2.result.hidden_rate
 
             df1_avatars = client.pandas_integration.download_dataframe(
                 avatarization_job1.result.sensitive_unshuffled_avatars_datasets.id
@@ -180,6 +201,8 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
         else:
             df1_avatars = df1
             df2_avatars = df2
+            hr1 = np.nan
+            hr2 = np.nan
 
 
         ################################
@@ -229,25 +252,42 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
                 _columns1 = set(df1_avatars.columns) - set(shared_columns)
                 _columns2 = set(df2_avatars.columns) - set(shared_columns)
 
-                # corr_records, corr_avatars, corr_diff = get_correlations(df, linked_df, list(columns1), list(columns2))
+                # statistics
                 corr_records, corr_avatars, corr_diff = get_correlations(df, linked_df, list(_columns1), list(_columns2))
+                reconstruction_score = get_reconstruction_score(df, linked_df)
 
+                # plots
                 plt = plot_correlations(corr_records, corr_avatars, title=f"{linkage_algo.value} / {distance.value}")
                 plt.savefig(f"data/pra_linked_data__avatar__{linkage_algo.value}__{distance.value}_correlations.png")
 
-
                 proj_original, proj_linked = get_non_shared_var_projections(df, linked_df, list(_columns1), list(_columns2))
-
                 plt = generate_projection_plot(proj_original, proj_linked, title=f"Projection of non-shared variables for {linkage_algo}/{distance}")
                 plt.savefig(f"data/pra_linked_data__avatar__{linkage_algo.value}__{distance.value}_non_shared_var_projections.png")
 
 
-                reconstruction_score = get_reconstruction_score(df, linked_df)
-                print(f"reconstruction_score: {reconstruction_score}")
+                ################################
+                # Privacy Metrics
+                ################################
+                dataset_original = client.pandas_integration.upload_dataframe(df)
+                dataset_linked = client.pandas_integration.upload_dataframe(linked_df)
+                privacy_job_linked = client.jobs.create_privacy_metrics_job(
+                    PrivacyMetricsJobCreate(
+                        parameters=PrivacyMetricsParameters(
+                            original_id=dataset_original.id,
+                            unshuffled_avatars_id=dataset_linked.id,
+                            use_categorical_reduction=True
+                        ),
+                    )
+                )
+                privacy_job_linked = client.jobs.get_privacy_metrics(privacy_job_linked.id, timeout=1800)
+                print("PrivacyLinked job status:", privacy_job_linked.status)
+                hr_linked = privacy_job_linked.result.hidden_rate
 
+                # Compute and store statistics
                 stats["combination_id"].append(combination_i)
                 stats["number_of_shared_variables"].append(len(shared_columns))
                 stats["total_number_variables"].append(len(all_columns))
+
                 stats["contribution_score1"].append(contribution_score_dict1['selected_columns_relative_contribution_score'])
                 stats["unicity_score1"].append(n_unique_comb1)
                 stats["contribution_score2"].append(contribution_score_dict2['selected_columns_relative_contribution_score'])
@@ -258,6 +298,10 @@ for combination_i, shared_columns in enumerate(random_columns_combinations):
                 stats["corr_diff_sum"].append(corr_diff.sum().sum())
                 stats["reconstruction_score"].append(reconstruction_score)
                 stats["ava_ori"].append(ori_ava)
+
+                stats["hr1"].append(hr1)
+                stats["hr2"].append(hr2)
+                stats["hr_linked"].append(hr_linked)
 
                 stats_df = pd.DataFrame(stats)
                 print(' ==== stats_df ====')
@@ -271,3 +315,4 @@ stats_df.to_csv(f"data/many_pipeline_stats_{date}.csv", index=False)
 
 print(' ==== Final stats_df ====')
 print(stats_df)
+
