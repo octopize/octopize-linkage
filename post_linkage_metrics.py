@@ -47,8 +47,7 @@ def plot_correlations(corr_original, corr_avatars, title: str = None):
     return plt
 
 def get_correlations(
-    df: pd.DataFrame, linked_records: pd.DataFrame, columns1: List[str], columns2: List[str]
-) -> float:
+    df: pd.DataFrame, linked_records: pd.DataFrame, columns1: List[str], columns2: List[str]):
     """Compute correlation statistics between columns from different sources.
 
     Correlations between columns from the same source are not considered.
@@ -83,9 +82,22 @@ def get_correlations(
     corr_records = pd.concat([split_record_dummies_0, split_record_dummies_1], axis=1, keys=['split_record_dummies_0', 'split_record_dummies_1']).corr().loc['split_record_dummies_1', 'split_record_dummies_0']
     corr_avatars = pd.concat([linked_records_dummies_0, linked_records_dummies_1], axis=1, keys=['linked_records_dummies_0', 'linked_records_dummies_1']).corr().loc['linked_records_dummies_1', 'linked_records_dummies_0']
 
-    corr_diff = corr_records - corr_avatars
+    return corr_records, corr_avatars
 
-    return corr_records, corr_avatars, corr_diff
+
+def get_correlation_retention(df: pd.DataFrame, linked_records: pd.DataFrame, columns1: List[str], columns2: List[str]) -> float:
+    corr_records, corr_avatars = get_correlations(df, linked_records, columns1, columns2)
+    corr_diff = abs(corr_records - corr_avatars)
+    sum_of_diff = corr_diff.sum().sum()
+    mean_diff = np.mean(corr_diff)
+    std_diff = np.mean(np.std(corr_diff))
+    max_diff = np.max(corr_diff)
+    return {
+        'corr_diff_sum': sum_of_diff,
+        'corr_diff_mean': mean_diff,
+        'corr_diff_std': std_diff,
+        'corr_diff_max': max_diff,
+    }
 
 
 def generate_projection_plot(data_ori, data_linked, title: str = None):
@@ -288,14 +300,6 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
     for col in linked_records.select_dtypes(include=['object_']).columns:
         linked_records[col] = linked_records[col].apply(lambda x: convert_value(x, original_dtypes[col]))
 
-    # print('Type df: ', df.dtypes)
-    # print('Type df: ', df.iloc[1]['household_duties'])
-    # print('Type df: ', type(df.iloc[1]['household_duties']))
-
-    # print('Type df_reconstructed: ', df_reconstructed.dtypes)
-    # print('Type df_reconstructed: ', df_reconstructed.iloc[1]['household_duties'])
-    # print('Type df_reconstructed: ', type(df_reconstructed.iloc[1]['household_duties']))    
-
     all_diagonal_values = []
     all_diagonal_values_linked = []
     
@@ -328,7 +332,21 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
         diagonal_values_linked = np.diag(distances_linked)  # Get diagonal values from distances
         all_diagonal_values_linked.extend(diagonal_values_linked)
 
-    reconstruction_error_original = np.mean(all_diagonal_values)
-    reconstruction_error_linked = np.mean(all_diagonal_values_linked)
-    metric = reconstruction_error_original - reconstruction_error_linked
-    return metric
+    # reconstruction_diff = abs(all_diagonal_values - all_diagonal_values_linked)
+    reconstruction_diff = [abs(x - y) for x, y in zip(all_diagonal_values, all_diagonal_values_linked)]
+
+    reconstruction_diff_sum = sum(reconstruction_diff)
+    reconstruction_diff_mean = np.mean(reconstruction_diff)
+    reconstruction_diff_std = np.std(reconstruction_diff)
+    reconstruction_diff_max = np.max(reconstruction_diff)
+
+
+    # reconstruction_error_original = np.mean(all_diagonal_values)
+    # reconstruction_error_linked = np.mean(all_diagonal_values_linked)
+    # metric = abs(reconstruction_error_original - reconstruction_error_linked)
+    return {
+        'reconstruction_diff_sum': reconstruction_diff_sum,
+        'reconstruction_diff_mean': reconstruction_diff_mean,
+        'reconstruction_diff_std': reconstruction_diff_std,
+        'reconstruction_diff_max': reconstruction_diff_max,
+    }

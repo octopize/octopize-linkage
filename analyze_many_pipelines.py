@@ -1,9 +1,9 @@
 import pandas as pd
 
-file_path = "data/many_pipeline_stats_20241113_102244.csv"
+file_path = "data/many_pipeline_stats_20241120_103839.csv"
 
-post_linkage_metric = "correlation_retention"
-# post_linkage_metric = "reconstruction_score"
+post_linkage_metric = "correlation_difference_mean"
+# post_linkage_metric = "reconstruction_difference_mean"
 
 pre_linkage_metrics = "unicity_score1"
 # pre_linkage_metrics = "contribution_score1"
@@ -13,14 +13,14 @@ pre_linkage_metrics = "unicity_score1"
 stats_df = pd.read_csv(file_path)
 # stats_df['correlation_retention'] = 100 - stats_df['corr_diff_sum']
 
-reference_corr_diff_sums = {combination_id: min(stats_df[(stats_df['combination_id'] == combination_id) & (stats_df['distance'] == 'row_order')]['corr_diff_sum']) for combination_id in stats_df['combination_id'].unique()}
-print(reference_corr_diff_sums)
+# reference_corr_diff_sums = {combination_id: min(stats_df[(stats_df['combination_id'] == combination_id) & (stats_df['distance'] == 'row_order')]['corr_diff_sum']) for combination_id in stats_df['combination_id'].unique()}
+# print(reference_corr_diff_sums)
 
-# create new column with reference_corr_diff_sums for each combination_id
-stats_df['reference_corr_diff_sum'] = stats_df['combination_id'].map(reference_corr_diff_sums)
+# # create new column with reference_corr_diff_sums for each combination_id
+# stats_df['reference_corr_diff_sum'] = stats_df['combination_id'].map(reference_corr_diff_sums)
 
-# create new column with relative percentage difference between corr_diff_sum and reference_corr_diff_sum
-stats_df['correlation_retention'] = - abs((stats_df['corr_diff_sum'] - stats_df['reference_corr_diff_sum']))
+# # create new column with relative percentage difference between corr_diff_sum and reference_corr_diff_sum
+# stats_df['correlation_retention'] = - abs((stats_df['corr_diff_sum'] - stats_df['reference_corr_diff_sum']))
 
 print(stats_df)
 
