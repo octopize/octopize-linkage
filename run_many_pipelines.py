@@ -33,7 +33,7 @@ password = os.environ.get("AVATAR_PASSWORD")
 client = ApiClient(base_url=url)
 client.authenticate(username=username, password=password)
 
-number_of_random_column_combinations = 10  # per dataset
+number_of_random_column_combinations = 20  # per dataset
 dataset_names = [Dataset.STUDENT_DROPOUT, Dataset.STUDENT_PERFORMANCE, Dataset.ADULT, Dataset.PRA]
 # dataset_names = [Dataset.PRA]
 dataset_number_of_records = {
@@ -99,8 +99,9 @@ for dataset_name in dataset_names:
 
     # get a random sample of columns
     random_columns_combinations = []
-    for i in range(number_of_random_column_combinations):
-        number_of_columns_in_combination = np.random.randint(min_number_of_random_column_in_combinations, max_number_of_random_column_in_combinations)
+    number_of_columns_in_combinations = list(np.random.randint(min_number_of_random_column_in_combinations, max_number_of_random_column_in_combinations, size=number_of_random_column_combinations))
+    print("number_of_columns_in_combinations: ", number_of_columns_in_combinations)
+    for number_of_columns_in_combination in number_of_columns_in_combinations:
         random_columns_combinations.append(random.sample(all_columns, number_of_columns_in_combination))
 
     combination_dict = {}
