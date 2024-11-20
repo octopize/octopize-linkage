@@ -2,15 +2,23 @@
 
 import pandas as pd
 
-from post_linkage_metrics import generate_projection_plot, get_correlations, get_non_shared_var_projections, get_reconstruction_score, plot_correlations
+from post_linkage_metrics import generate_projection_plot, get_correlation_retention, get_correlations, get_non_shared_var_projections, get_reconstruction_score, plot_correlations
 from linkage import Distance, LinkingAlgorithm
 
 stats = {
     "ava_ori": [],
     "distance": [],
     "linkage_algo": [],
-    "corr_diff_sum": [],
-    "reconstruction_score": []
+
+    # post-linkage metrics
+    "correlation_difference_sum": [],
+    "correlation_difference_mean": [],
+    "correlation_difference_std": [],
+    "correlation_difference_max": [],
+    "reconstruction_difference_sum": [],
+    "reconstruction_difference_mean": [],
+    "reconstruction_difference_std": [],
+    "reconstruction_difference_max": [],
 }
 
 # Load and prepare original data
@@ -51,14 +59,26 @@ for ori_ava in LINK_ORI_AVA:
                     linked_df[col] = linked_df[col].astype(object)
 
                 # Compute and store statistics
-                corr_records, corr_avatars, corr_diff = get_correlations(original_df, linked_df, list(columns1), list(columns2))
-                reconstruction_score = get_reconstruction_score(original_df, linked_df)
+                # statistics
+                corr_records, corr_avatars = get_correlations(original_df, linked_df, list(columns1), list(columns2))
+                corr_retention_stats = get_correlation_retention(original_df, linked_df, list(columns1), list(columns2))
+                
+                reconstruction_stats = get_reconstruction_score(original_df, linked_df)
 
                 stats["ava_ori"].append(ori_ava)
                 stats["distance"].append(distance.value)
                 stats["linkage_algo"].append(linkage_algo.value)
-                stats["corr_diff_sum"].append(corr_diff.sum().sum())
-                stats["reconstruction_score"].append(reconstruction_score)
+
+                stats["correlation_difference_sum"].append(corr_retention_stats['corr_diff_sum'])
+                stats["correlation_difference_mean"].append(corr_retention_stats['corr_diff_mean'])
+                stats["correlation_difference_std"].append(corr_retention_stats['corr_diff_std'])
+                stats["correlation_difference_max"].append(corr_retention_stats['corr_diff_max'])
+        
+                # stats["reconstruction_score"].append(reconstruction_score)
+                stats["reconstruction_difference_sum"].append(reconstruction_stats['reconstruction_diff_sum'])
+                stats["reconstruction_difference_mean"].append(reconstruction_stats['reconstruction_diff_mean'])
+                stats["reconstruction_difference_std"].append(reconstruction_stats['reconstruction_diff_std'])
+                stats["reconstruction_difference_max"].append(reconstruction_stats['reconstruction_diff_max'])
 
                 # Compute and store plots
                 plt = plot_correlations(corr_records, corr_avatars, title=f"{linkage_algo.value} / {distance.value}")

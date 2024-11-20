@@ -3,6 +3,7 @@
 import pandas as pd
 
 from linkage import Distance, link_datasets, LinkingAlgorithm
+from pre_linkage_metrics import ImputeMethod, contribution_score, get_unicity_score
 
 # Select common/shared columns
 shared_columns = ['sex', 'nationality', 'age', 'province', 'place_birth']
@@ -31,6 +32,37 @@ for ori_ava in LINK_ORI_AVA:
         df1[col] = df1[col].astype(object)
     for col in should_be_categorical_columns_2:
         df2[col] = df2[col].astype(object)
+
+    # ################################
+    # # Pre-linkage metrics
+    # ################################
+    # # ?? How representative of the dataset at source 1 are my common variables ?
+    # contribution_score_dict1 = contribution_score(
+    #     df=df1, 
+    #     shared_columns=shared_columns, 
+    #     target_explained_variance=0.9,
+    #     impute_method=ImputeMethod.MEDIAN,
+    #     should_consider_missing=True,
+    #     seed=None)
+
+    # # ?? How representative of the dataset at source 2 are my common variables ?
+    # contribution_score_dict2 = contribution_score(
+    #     df=df2, 
+    #     shared_columns=shared_columns, 
+    #     target_explained_variance=0.9,
+    #     impute_method=ImputeMethod.MEDIAN,
+    #     should_consider_missing=True,
+    #     seed=None)
+
+
+    n_unique_comb1 = get_unicity_score(df1, shared_columns)
+    n_unique_comb2 = get_unicity_score(df2, shared_columns)
+
+    print("== Pre-linkage metrics ==")
+    # print(f"Contribution score for source 1: {contribution_score_dict1}")
+    # print(f"Contribution score for source 2: {contribution_score_dict2}")
+    print(f"Unicity score for source 1: {n_unique_comb1}")
+    print(f"Unicity score for source 2: {n_unique_comb2}")
 
     for linkage_algo in linkage_algos:
         for distance in distances:
