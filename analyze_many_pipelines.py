@@ -58,42 +58,41 @@ plt.show()
 
 
 
-# # Define the datasets
-# datasets = stats_df['dataset'].unique()
+# Define the datasets
+datasets = stats_df['dataset'].unique()
 
-# # Create a figure with 2 subplots
-# fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+# Create a figure with 2 subplots
+fig, axes = plt.subplots(1, 2, figsize=(15, 5))
 
-# color_map = dict(zip(stats_df['number_records'].unique(), 'tab10'))
+# Define a color palette
+palette = sns.color_palette('tab10', n_colors=len(stats_df['number_records'].unique()))
+color_map = {record: palette[i] for i, record in enumerate(stats_df['number_records'].unique())}
 
-
-# for i, dataset in enumerate(datasets):
-#     ax = axes[i]
-#     data = stats_df[stats_df['dataset'] == dataset]
+for i, dataset in enumerate(datasets):
+    ax = axes[i]
+    data = stats_df[stats_df['dataset'] == dataset]
     
-#     # Create the scatter plot with different colors for each number_records
-#     sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, hue='number_records', palette='tab10', ax=ax)
+    # Create the scatter plot with different colors for each number_records
+    sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, hue='number_records', palette=color_map, ax=ax)
     
-#     # Add regression lines for each number_records
-#     unique_records = data['number_records'].unique()
-#     for i, record in enumerate(unique_records):
-#         # get color from the palette
-#         # color = sns.color_palette('tab10')[i]
-#         subset = data[data['number_records'] == record]
-#         sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, scatter=False, ax=ax, color=color_map[record])
+    # Add regression lines for each number_records
+    unique_records = data['number_records'].unique()
+    for record in unique_records:
+        subset = data[data['number_records'] == record]
+        sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, scatter=False, ax=ax, color=color_map[record])
     
-#     # Set labels and title
-#     ax.set_xlabel('Mean Unicity Score')
-#     ax.set_ylabel(post_linkage_metric)
-#     ax.set_title(f'{dataset}')
-#     ax.legend(title='Dataset Size (number of records)')
+    # Set labels and title
+    ax.set_xlabel('Mean Unicity Score')
+    ax.set_ylabel(post_linkage_metric)
+    ax.set_title(f'{dataset}')
+    ax.legend(title='Dataset Size (number of records)')
 
-# # Set the overall title
-# plt.suptitle(f'Correlation between Mean Unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes')
+# Set the overall title
+plt.suptitle(f'Correlation between Mean Unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes')
 
-# # Adjust layout
-# plt.tight_layout()
-# plt.show()
+# Adjust layout
+plt.tight_layout()
+plt.show()
 
 
 
