@@ -33,7 +33,7 @@ password = os.environ.get("AVATAR_PASSWORD")
 client = ApiClient(base_url=url)
 client.authenticate(username=username, password=password)
 
-number_of_random_column_combinations = 20  # per dataset
+number_of_random_column_combinations = 10  # per dataset
 dataset_names = [Dataset.STUDENT_DROPOUT, Dataset.STUDENT_PERFORMANCE, Dataset.ADULT, Dataset.PRA]
 # dataset_names = [Dataset.PRA]
 dataset_number_of_records = {

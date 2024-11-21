@@ -270,12 +270,21 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
     df = _dfs[0].reset_index(drop=True)
     linked_records = _dfs[1].reset_index(drop=True)
 
+    # convert all values in categorical variables of linked_reconstructed to str. This is because
+    # we may have different value types in the dataframes to compare following the inverse_transform
+    original_dtypes  = df.dtypes
+    # print('original_dtypes: ', original_dtypes)
+
+    for col in df.select_dtypes(include=['object_']).columns:
+        df[col] = df[col].apply(lambda x: convert_value(x, original_dtypes[col]))
+
+    for col in linked_records.select_dtypes(include=['object_']).columns:
+        linked_records[col] = linked_records[col].apply(lambda x: convert_value(x, original_dtypes[col]))
+
     # fit saiph model on original data
     model_ori = saiph.fit(
         df, nf=number_of_model_components
     )
-
-    original_dtypes  = df.dtypes
 
     # transform and inverse transform original data
     df_proj = saiph.transform(df, model_ori)
@@ -288,17 +297,12 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
 
     # convert all values in categorical variables of linked_reconstructed to str. This is because
     # we may have different value types in the dataframes to compare following the inverse_transform
-    for col in df.select_dtypes(include=['object_']).columns:
-        df[col] = df[col].apply(lambda x: convert_value(x, original_dtypes[col]))
-
     for col in df_reconstructed.select_dtypes(include=['object_']).columns:
         df_reconstructed[col] = df_reconstructed[col].apply(lambda x: convert_value(x, original_dtypes[col]))
 
     for col in linked_reconstructed.select_dtypes(include=['object_']).columns:
         linked_reconstructed[col] = linked_reconstructed[col].apply(lambda x: convert_value(x, original_dtypes[col]))
 
-    for col in linked_records.select_dtypes(include=['object_']).columns:
-        linked_records[col] = linked_records[col].apply(lambda x: convert_value(x, original_dtypes[col]))
 
     all_diagonal_values = []
     all_diagonal_values_linked = []
