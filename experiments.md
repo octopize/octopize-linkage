@@ -1,7 +1,5 @@
 # Experimental results
 
-## 
-
 ## Differences between the selected datasets
 
 #### Dataset sizes
