@@ -1,11 +1,12 @@
 import math
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-# file_path = "data/many_pipeline_stats_20241120_170813.csv"  # full results
-file_path = "data/many_sizes_stats_20241121_144048.csv"  # many sizes only 
+file_path = "data/many_pipeline_stats_20241120_170813.csv"  # full results
+# file_path = "data/many_sizes_stats_20241121_144048.csv"  # many sizes only 
 
 post_linkage_metric = "correlation_difference_mean"
 # post_linkage_metric = "reconstruction_difference_mean"
@@ -32,6 +33,7 @@ stats_df['method'] = stats_df['linkage_algo'] + '_' + stats_df['distance']
 
 stats_df['mean_unicity_score'] = (stats_df['unicity_score1'] + stats_df['unicity_score2']) / 2
 stats_df['mean_contribution_score'] = (stats_df['contribution_score1'] + stats_df['contribution_score2']) / 2
+# stats_df['dataset_dimension_ratio'] = stats_df['number_records'] / stats_df['total_number_variables']
 
 print(stats_df)
 
@@ -43,61 +45,198 @@ datasets = stats_df['dataset'].unique()
 
 
 
-# Create a seaborn boxplot with mean unicity score per dataset
-sns.boxplot(data=stats_df, x='dataset', y='mean_unicity_score')
+# # Create a seaborn boxplot with mean unicity score per dataset
+# sns.boxplot(data=stats_df, x='dataset', y='mean_unicity_score')
 
-# Set labels and title
-plt.xlabel('Dataset')
-plt.ylabel('Mean Unicity Score')
-plt.title('Mean Unicity Score for Each Dataset')
+# # Set labels and title
+# plt.xlabel('Dataset')
+# plt.ylabel('Mean Unicity Score')
+# plt.title('Mean Unicity Score for Each Dataset')
 
-# Show the plot
-plt.tight_layout()
-plt.show()
-
-
+# # Show the plot
+# plt.tight_layout()
+# plt.show()
 
 
-# Define the datasets
-datasets = stats_df['dataset'].unique()
 
-# Create a figure with 2 subplots
-fig, axes = plt.subplots(1, 2, figsize=(15, 5))
 
-# Define a color palette
-palette = sns.color_palette('tab10', n_colors=len(stats_df['number_records'].unique()))
-color_map = {record: palette[i] for i, record in enumerate(stats_df['number_records'].unique())}
+
+
+# # Define the datasets
+# datasets = stats_df['dataset'].unique()
+
+# # Create a figure with 2 subplots
+# fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+
+# # Define a color palette
+# palette = sns.color_palette('tab10', n_colors=len(stats_df['number_records'].unique()))
+# color_map = {record: palette[i] for i, record in enumerate(stats_df['number_records'].unique())}
+
+# for i, dataset in enumerate(datasets):
+#     ax = axes[i]
+#     data = stats_df[(stats_df['dataset'] == dataset) & (stats_df['method'] == 'lsa_proj_eucl_all_source')]
+    
+#     # Create the scatter plot with different colors for each number_records
+#     sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, hue='number_records', palette=color_map, ax=ax)
+    
+#     # Add regression lines for each number_records
+#     unique_records = data['number_records'].unique()
+#     for record in unique_records:
+#         subset = data[data['number_records'] == record]
+#         sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, scatter=False, ax=ax, line_kws={'linewidth':3}, color=color_map[record], ci=None)
+
+#         # add regression line for stats_df['method'] == 'lsa_random')
+#         subset = stats_df[(stats_df['dataset'] == dataset) & (stats_df['method'] == 'lsa_random') & (stats_df['number_records'] == record)]
+#         sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, line_kws={"ls":':'}, scatter=False, ax=ax, color=color_map[record], ci=None)
+#         subset = stats_df[(stats_df['dataset'] == dataset) & (stats_df['method'] == 'lsa_row_order') & (stats_df['number_records'] == record)]
+#         sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, line_kws={"ls":':'}, scatter=False, ax=ax, color=color_map[record], ci=None)
+
+
+#     # set minimum value for y axis
+#     ax.set_ylim(bottom=0)
+
+#     # Set labels and title
+#     ax.set_xlabel('Mean Unicity Score')
+#     ax.set_ylabel(post_linkage_metric)
+#     ax.set_title(f'{dataset}')
+#     ax.legend(title='Number of records')
+
+# # Set the overall title
+# plt.suptitle(f'Correlation between Mean Unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes with random (ub) and row order (lb)')
+
+# # Adjust layout
+# plt.tight_layout()
+# plt.show()
+
+
+
+
+
+
+
+# # Create a suplot for each dataset with the correlation between mean contribution score and post_linkage_metric
+# ncols = 2 
+# nrows = math.ceil(len(datasets)/2)
+# fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 5*nrows))
+
+# for i, dataset in enumerate(datasets):
+#     row = i // ncols
+#     col = i % ncols
+#     data = stats_df[(stats_df['dataset'] == dataset) & (stats_df['method'] == 'lsa_proj_eucl_all_source')]
+#     # sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, ax=axes[i], hue='dataset_dimension_ratio', palette='tab10')
+#     sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, ax=axes[i], hue='number_records', palette='tab10')
+#     axes[i].set_title(f'{dataset}')
+#     axes[i].set_xlabel('Mean Unicity Score')
+#     axes[i].set_ylabel(post_linkage_metric)
+#     axes[i].legend(title='Number of records')
+# plt.suptitle(f'Correlation between Mean unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes')
+
+# plt.tight_layout()
+# plt.show()
+
+
+
+
+# Create a dataframe with the proportion of data points above a certain threshold of post_linkage_metric for each dataset and method and mean_unicity_score bin (by bins of 10)
+# Define the threshold
+THRESHOLD = 0.05
+
+# Bin the mean_unicity_score values by bins of 10
+bins = np.arange(0, 1+0.001, 0.1)
+stats_df['mean_unicity_score_bin'] = pd.cut(stats_df['mean_unicity_score'], bins)
+print(stats_df)
+
+# Group by dataset, method, and binned mean_unicity_score
+grouped = stats_df.groupby(['dataset', 'method', 'ava_ori', 'mean_unicity_score_bin'])
+
+print('grouped.apply(lambda x: (x[post_linkage_metric] < THRESHOLD): \n', grouped.apply(lambda x: x.shape[0]))
+print('grouped.apply(lambda x: (x[post_linkage_metric] < THRESHOLD): \n', grouped.apply(lambda x: (x[post_linkage_metric])))
+# Calculate the proportion of data points above the threshold for each group
+proportion_above_threshold = grouped.apply(lambda x: (x[post_linkage_metric] < THRESHOLD).sum()/ x.shape[0]).reset_index()
+
+# Rename the columns for clarity
+proportion_above_threshold.columns = ['dataset', 'method', 'ava_ori', 'mean_unicity_score_bin', 'proportion_above_threshold']
+
+print(proportion_above_threshold)
+
+
+
+# ava_ori = 'avatars'
+ava_ori = 'original'
+
+# Create subplot for each dataset with a boxplot using stats_df showing post_linkage_metric for each mean_unicity_score_bin and method
+ncols = 2
+nrows = math.ceil(len(datasets)/2)
+fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 5*nrows))
 
 for i, dataset in enumerate(datasets):
-    ax = axes[i]
-    data = stats_df[stats_df['dataset'] == dataset]
-    
-    # Create the scatter plot with different colors for each number_records
-    sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, hue='number_records', palette=color_map, ax=ax)
-    
-    # Add regression lines for each number_records
-    unique_records = data['number_records'].unique()
-    for record in unique_records:
-        subset = data[data['number_records'] == record]
-        sns.regplot(data=subset, x='mean_unicity_score', y=post_linkage_metric, scatter=False, ax=ax, color=color_map[record])
-    
-    # Set labels and title
-    ax.set_xlabel('Mean Unicity Score')
-    ax.set_ylabel(post_linkage_metric)
-    ax.set_title(f'{dataset}')
-    ax.legend(title='Dataset Size (number of records)')
 
-# Set the overall title
-plt.suptitle(f'Correlation between Mean Unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes')
+    row = i // ncols
+    col = i % ncols
+    data = stats_df[(stats_df['dataset'] == dataset) & (stats_df['ava_ori'] == ava_ori)]
+    sns.boxplot(data=data, x='mean_unicity_score_bin', y=post_linkage_metric, hue='method', ax=axes[row, col])
+    axes[row, col].set_title(f'{dataset}')
+    axes[row, col].set_xlabel('Mean Unicity Score')
+    axes[row, col].set_ylabel(post_linkage_metric)
+    axes[row, col].get_legend().remove()  # Remove the legend from each subplot
 
-# Adjust layout
-plt.tight_layout()
+    # axes[row, col].legend(title='Linkage Algorithm')
+
+# add horizontal line for the threshold (dashed black line)
+for ax in axes.flatten():
+    ax.axhline(y=THRESHOLD, color='black', linestyle='--')
+
+# Share legend and place it below the plots
+handles, labels = axes[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, title='Linkage Algorithm', loc='lower center', ncol=len(labels))
+
+# add title
+plt.suptitle(f'{post_linkage_metric} for different mean unicity scores for {ava_ori}')
+
+plt.tight_layout(rect=[0, 0.05, 1, 1])
 plt.show()
 
 
 
 
-# Create a suplot for each dataset with the correlation between mean contribution score and post_linkage_metric
+# Create subplot for each dataset with a boxplot using stats_df showing post_linkage_metric for each mean_unicity_score_bin and method
+ncols = 2
+nrows = math.ceil(len(datasets)/2)
+fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 5*nrows))
+
+for i, dataset in enumerate(datasets):
+
+    row = i // ncols
+    col = i % ncols
+    data = stats_df[(stats_df['dataset'] == dataset) & (stats_df['ava_ori'] == 'avatars')]
+    sns.boxplot(data=data, x='mean_unicity_score_bin', y="correlation_difference_max", hue='method', ax=axes[row, col])
+    axes[row, col].set_title(f'{dataset}')
+    axes[row, col].set_xlabel('Mean Unicity Score')
+    axes[row, col].set_ylabel("correlation_difference_max")
+    axes[row, col].get_legend().remove()  # Remove the legend from each subplot
+
+    # axes[row, col].legend(title='Linkage Algorithm')
+
+# add horizontal line for the threshold (dashed black line)
+for ax in axes.flatten():
+    ax.axhline(y=0.1, color='black', linestyle='--')
+
+# Share legend and place it below the plots
+handles, labels = axes[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, title='Linkage Algorithm', loc='lower center', ncol=len(labels))
+
+plt.suptitle(f'correlation_difference_max for different mean unicity scores for {ava_ori}')
+
+plt.tight_layout(rect=[0, 0.05, 1, 1])
+plt.show()
+
+
+
+assert False
+
+
+# Create a histogram where x is the mean unicity score (by bins of 10) and y is the number of data points avove the threshold
+THRESHOLD = 0.1
 ncols = 2 
 nrows = math.ceil(len(datasets)/2)
 fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 5*nrows))
@@ -105,18 +244,20 @@ fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 5*nrows))
 for i, dataset in enumerate(datasets):
     row = i // ncols
     col = i % ncols
-    data = stats_df[(stats_df['dataset'] == dataset)]
-    sns.scatterplot(data=data, x='mean_unicity_score', y=post_linkage_metric, ax=axes[i], hue='number_records', palette='tab10')
-    axes[i].set_title(f'{dataset}')
-    axes[i].set_xlabel('Mean Unicity Score')
-    axes[i].set_ylabel(post_linkage_metric)
-    axes[i].legend(title='Dataset Size (number of records)')
-plt.suptitle(f'Correlation between Mean unicity Score and {post_linkage_metric} for linkage of avatars and different dataset sizes')
+    data = stats_df[(stats_df['dataset'] == dataset) & (stats_df['ava_ori'] == 'avatars') & (stats_df[post_linkage_metric] < THRESHOLD)]
+    sns.histplot(data=data, x='mean_unicity_score', ax=axes[row, col], bins=10, hue='method', palette='tab10', multiple='dodge', element='bars', shrink=0.8)
+    axes[row, col].set_title(f'{dataset}')
+    axes[row, col].set_xlabel('Mean Unicity Score')
+    axes[row, col].set_ylabel(f'Number of linkages with {post_linkage_metric} < {THRESHOLD}')
+    axes[row, col].legend(title='Linkage Algorithm')
+
+plt.suptitle(f'Number of linkages with {post_linkage_metric} < {THRESHOLD} for different mean unicity scores')
 
 plt.tight_layout()
 plt.show()
 
 
+assert False
 
 
 
@@ -156,6 +297,7 @@ for i, dataset in enumerate(datasets):
 plt.suptitle(f'Correlation between Mean Unicity Score and {post_linkage_metric} for best linkage method')
 plt.tight_layout()
 plt.show()
+
 
 
 

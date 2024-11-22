@@ -3,11 +3,16 @@ from typing import Optional
 
 import pandas as pd
 
+from post_linkage_metrics import get_correlations, plot_correlations
+
 class Dataset(Enum):
     PRA = "pra"
     ADULT = "adult"
     STUDENT_PERFORMANCE = "student_performance"
     STUDENT_DROPOUT = "student_dropout"
+    CHESS_GAMES = "chess_games"
+    CAREER_CHANGE = "career_change"
+
 
 
 def load_dataset(dataset_name, number_records:Optional[int]=None):
@@ -19,6 +24,10 @@ def load_dataset(dataset_name, number_records:Optional[int]=None):
         data = load_student_performance()
     elif dataset_name == Dataset.STUDENT_DROPOUT:
         data = load_student_dropout()
+    elif dataset_name == Dataset.CHESS_GAMES:
+        data = load_chess_games()
+    elif dataset_name == Dataset.CAREER_CHANGE:
+        data = load_career_change()
     else:
         raise ValueError(f"Unknown dataset name: {dataset_name}")
     
@@ -80,6 +89,41 @@ def load_student_dropout():
     should_be_categorical_columns = ['Marital status', 'Application mode', 'Application order', 'Course', 'Daytime/evening attendance', 'Previous qualification', 'Nacionality', "Mother's qualification", "Father's qualification", "Mother's occupation", "Father's occupation", "Displaced", "Educational special needs", "Debtor", "Tuition fees up to date", "Gender", "Scholarship holder", "International", "Target" ]
     for col in should_be_categorical_columns:
         df[col] = df[col].astype(object)
+
+    return {
+        'df': df,
+        'min_number_of_random_column_in_combinations': 2,
+        'max_number_of_random_column_in_combinations': 10
+        }
+
+def load_chess_games():
+    df = pd.read_csv("data/chess_games.csv")
+    df = df.drop(columns=["id", "white_id", "black_id", "moves", "opening_name"])
+
+    # convert all bool columns to object
+    for col in df.columns:
+        if df[col].dtype == bool:
+            df[col] = df[col].astype(object)
+            # add string suffix to values to ensure the value is not treated as bool
+            df[col] = df[col].astype(str) + "_"
+
+    # # get correlations
+    # df_dummies = pd.get_dummies(df)
+    # print(df_dummies.columns)
+    # corr_o = df_dummies.corr()
+    # # corr_o, _, _ = get_correlations(df, df, df.columns, df.columns)
+    # plt = plot_correlations(corr_o, corr_o, "original correlation in chess games dataset")
+    # plt.savefig(f"data/chess_games_original_correlations.png")
+
+    return {
+        'df': df,
+        'min_number_of_random_column_in_combinations': 2,
+        'max_number_of_random_column_in_combinations': 6
+        }
+
+
+def load_career_change():
+    df = pd.read_csv("data/career_change.csv")
 
     return {
         'df': df,

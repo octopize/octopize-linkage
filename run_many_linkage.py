@@ -7,13 +7,15 @@ from pre_linkage_metrics import ImputeMethod, contribution_score, get_unicity_sc
 
 # Select common/shared columns
 shared_columns = ['sex', 'nationality', 'age', 'province', 'place_birth']
+# shared_columns = ['search_work', 'household_duties', 'main_prof_situation', 'place_birth', 'search_months', 'search_method', 'age']
 
+# LINK_ORI_AVA = ["original", "avatars"]
+LINK_ORI_AVA = ["avatars"]
 
-LINK_ORI_AVA = ["original", "avatars"]
 linkage_algos = [LinkingAlgorithm.LSA] # [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
-distances = [Distance.GOWER, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+# distances = [Distance.GOWER, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
 # distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
-
+distances = [Distance.PROJECTION_DIST_ALL_SOURCES]
 should_shuffle_before_linkage = True
 
 for ori_ava in LINK_ORI_AVA:
