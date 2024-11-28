@@ -24,6 +24,6 @@ Data linkage should follow some key steps. First, in most contexts data will nee
 Those steps and insights about linkage performance are detailed in dedicated pages:
 - [Anonymization](./anonymization_privacy.md)
 - [Pre-linkage metrics](./prelinkage_metrics.md)
-- [Linkage](./linkage.md)
+- [Linkage](./linkage_methods.md)
 - [Post-linkage metrics](./postlinkage_metrics.md)
 - [Experiments](./experiments.md)
