@@ -1,6 +1,6 @@
 # Experimental results
 
-## Differences between the selected datasets
+## Differences between the selected datasets
 
 #### Dataset sizes
 The number of rows in a dataset is a property which may be important when interpreting results because it probably has an impact on linkage. This is especially true because the proposed linkage solutions are approximative: the aim of the linkage is not to link individual 1 from source A with individual 1 from source B but instead to link individual 1 from source A with another individual from source B in such way that the global statistical properties of the datasets are preserved.

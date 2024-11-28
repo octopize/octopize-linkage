@@ -8,7 +8,7 @@ Although the library can be used on any data, the original need for data linkage
 
 ![Linkage example](../img/linkage-full-example.png)
 
-## Scope
+## Scope
 
 The library currently focuses on linkage in the following contexts: 
 - **There must be some variables in common**. The solutions made available use a notion of distance between individuals in both sources. This distance is computed using those common variables. 

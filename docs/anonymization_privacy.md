@@ -1,4 +1,4 @@
-# Anonymization and privacy
+# Anonymization and privacy
 
 This page describes how data can be anonymized with the avatar solution and what linkage means in terms of privacy.
 

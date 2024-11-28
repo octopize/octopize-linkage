@@ -18,7 +18,7 @@ Correlation retention can also be plotted. Below are two examples of good (using
 
 ![Example of poor correlation retention](../img/pra_linked_data__avatar__lsa__random_correlations.png)
 
-## Reconstruction error
+## Reconstruction score
 
 Correlation retention focuses on pair-wise correlation and so is a bi-variate metric. However, a dataset can have more complex relationships between more than 2 variables. The reconstruction score relies on a factorial analysis model (e.g. PCA) in order to capture all relationships that may exist in the data and this without limitations in term of number of variables in those relationships.
 
@@ -28,3 +28,5 @@ Reconstruction error is computed by first fitting a model on the original data a
 If the data has similar statistical properties to the original data, the reconstruction error will be close to the reconstruction error of the original data. On the other hand, if the data has different statistical properties, the reconstruction error will be higher. Measuring this difference is a way to capture how globally similar the linked data is to the original data. This metric is multivariate since each model dimension potentially combines information from all variables.
 
 Because reconstructed data needs to be in the original space, it may be a mix of numeric and categorical types, so the reconstruction error is measured by means of the Gower distance.
+
+![Reconstruction score](../img/reconstruction_score.png)

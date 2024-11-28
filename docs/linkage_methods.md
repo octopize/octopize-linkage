@@ -1,4 +1,4 @@
-# Linkage methods
+# Linkage methods
 
 This page describes the different approaches available to perform linkage between two data sources.
 
@@ -8,7 +8,7 @@ Linkage of datasets requires two main components: a notion of distance between t
 
 ## Distances
 
-### Gower distance
+### Gower distance
 
 The gower distance can be used on data containing both numeric and non-numeric variables. This distance is a natural option to consider when computing distances between records in datasets as most real-life datasets contain mixed data types. Gower can be interpreted as a combination of Euclidean and Hamming distance.
 
@@ -41,7 +41,7 @@ This library uses [*saiph*, available on pypi](https://pypi.org/project/saiph/) 
 
 ## Linkage algorithms
 
-### Linear Sum Assignment (LSA) linkage
+### Linear Sum Assignment (LSA) linkage
 
 LSA is a classic combinatorial optimization problem which aims at assigning a set of objects to another set of objects in a way that the overall assignment cost is minimized.
 
@@ -81,7 +81,7 @@ The second greedy algorithms, currently named `min_reorder` only differs from `m
 
 To understand the performance of the different linkage options, two baseline linkage methods are available.
 
-### Row order linkage
+### Row order linkage
 
 Row order linkage between two sources A and B will allocate the $i$-th individual from A to the $i$-th individual from B.  
 
