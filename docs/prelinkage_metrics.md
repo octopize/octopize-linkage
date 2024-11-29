@@ -4,7 +4,7 @@ Pre-linkage metrics are necessary to evaluate the potential for linkage. If vari
 
 ## Unicity
 
-Given a dataset $A$ with variables $V_A$, the unicity score for a set of shared variables $V_S$ is given by the ratio between number of unique value combinations of $V_S$ (its cardinality $card(V_s)$) and the number of records in the dataset: 
+Given a dataset $A$ with variables $V_A$, the unicity score for a set of shared variables $V_S$ is given by the ratio between number of unique value combinations of $V_S$ (its cardinality *card(V_s)*) and the number of records in the dataset: 
 
 $$
 U(V_S, A) = \frac{card(V_S)}{|A|}
