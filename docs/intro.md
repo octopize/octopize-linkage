@@ -27,3 +27,6 @@ Those steps and insights about linkage performance are detailed in dedicated pag
 - [Linkage](./linkage_methods.md)
 - [Post-linkage metrics](./postlinkage_metrics.md)
 - [Experiments](./experiments.md)
+
+Future work ideas are listed in:
+- [Future work](./future_work.md)

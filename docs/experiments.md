@@ -105,24 +105,14 @@ To study the impact of the number of records, we use the two largest datasets an
 ![image info](../img/number_of_records_with_regression_lines.png)
 
 **Interpretation:**
-- The more records, the closer to original.
-
+- The more records, the closer to original. This is an expected findings: more individuals in a dataset means that there are more potential good candidates for association during the linkage step.
 
 ## Take-home messages
 
 - Unicity score should be combined with number of records to decide whether linkage could be performed
-- This library should serve as a basis to assess additional options to measure and perform linkage of synthetic data. Additional distances, algorithms and metrics can easily be added to it and evaluated.
+- Mean correlation difference is a post-linkage that can be used.
+- When having sufficient number of records (i.e. > 5000), unicity score is correlated to post-linkage metric and so should be maximised. 
 - Some global correlations may not be "preserved"
 - Non-existent correlations will not be created at linkage
-- With this in mind, mean correlation difference is a post-linkage that can be used.
-- When having sufficient number of records (i.e. > 5000), unicity score is correlated to post-linkage metric and so should be maximised. 
 - Based on 2 datasets large enough in this study, we suggest that unicity score should be greater than ~0.2 before attempting linkage. Additional runs on more datasets should be executed to determine a threshold.
-
-
-
-## Questions we should answer
-
-- What is the best pre-linkage metric ? 
-    it seems that this will be unicity score
-- In the case where that best linkage metric (e.g. unicity score) is not good for a scenario, is there another metric that can be used ?
-    e.g. can shared variables that are non unique but that are representative of the data structure (i.e. good contribution score) be used for linkage?
+- This library should serve as a basis to assess additional options to measure and perform linkage of synthetic data. Additional distances, algorithms and metrics can easily be added to it and evaluated.
