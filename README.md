@@ -56,7 +56,7 @@ poetry run python anonymize_pra.py
 
 ## Run linkages
 
-The run_many_linkage.py script can be used to perform linkage between two datasets (anonymized or original). It enables analysis of a specific use case under different linkage settings (different distances and algorithms).
+The `run_many_linkage.py` script can be used to perform linkage between two datasets (anonymized or original). It enables analysis of a specific use case under different linkage settings (different distances and algorithms).
 The script generates csv files of the linked data.
 
 ```bash
@@ -78,30 +78,22 @@ nix-shell --run 'python analyze_many_linkage.py'
 
 ## Run and analyze many scenarios (for experimental purposes)
 
-TODO ...
+The `run_many_pipelines.py` script can be used to perform linkage between two datasets (anonymized or original) for many scenarios. Scenarios are defined by a dataset (several open source datasets are available), by a set of common variables (sets of different sizes), by the use of original split data or their avatars and under different linkage settings. The script generates a csv file containing linkage metrics.
+
+The `analyze_many_pipelines.py` scripts can then be used to generate plots of this metric data.
+
+```bash
+# Perform many linkages and compute metrics
+poetry run python run_many_pipelines.py
+nix-shell --run 'python run_many_pipelines.py'
+
+# Analyze
+poetry run python analyze_many_pipelines.py
+nix-shell --run 'python analyze_many_linkage.py'
+```
 
 
-## Planned linkage steps
+## Documentation :books:
 
-1. Evaluate linkage potential
-Identify common/shared variables between two datasets and evaluate their correlation with the other variables in both datasets
-    - if low correlations: impossible to perform linkage (user ned to find a way to get more common variables to "help" linkage)
-    - Note: it is important to have correlation with variables in **both** datasets
-    - For experiments, this can be evaluated on original data
-(If there are many shared variables, find the optimum set of variables to use for linkage (if fewer = better))
-    
-2. Perform linkage
-    - several strategies available
-    - need to find the more robust one(s), able to work well on a wide range of datasets
-
-3. Evaluate linkage
-    - linkage metrics should be made available
-    - metrics will mainly be used in development stage because it may be difficult to assess a good linkage if we cannot get access to both original datasets to get the "ground truth" informations (pairing, correlations etc...).
-    - Can we think of linkage metrics computed **without** original datasets ?
-    - Comparison of `original_full_df` and `linked(avatar_split_1_df, avatar_split_2_df)`
-    - E.g. of metrics:
-        - Correlations between variables in data1 (x-axis) and variables in data2 (y-axis) - difference between original "ground truth" correlations and correlations on linked data
-
-4. Correlate pre and post linkage metrics
-    - Objective: find out if pre-linkage metrics can predict post-linkage metrics because in practice, we will not be able to run post-linkage metrics.
+The [documentation](./docs/intro.md) is available in `\docs`.
 

@@ -112,7 +112,8 @@ To study the impact of the number of records, we use the two largest datasets an
 - Unicity score should be combined with number of records to decide whether linkage could be performed
 - Mean correlation difference is a post-linkage that can be used.
 - When having sufficient number of records (i.e. > 5000), unicity score is correlated to post-linkage metric and so should be maximised. 
-- Some global correlations may not be "preserved"
-- Non-existent correlations will not be created at linkage
+- Some global correlations may not be "preserved" but non-existent correlations will not be created at linkage
+    - :point_right: **Correlation in linked data can be considered as real correlations.**
+    - :point_right: **But a lack of correlation in linked data may not necessarily mean that there is no correlation.**
 - Based on 2 datasets large enough in this study, we suggest that unicity score should be greater than ~0.2 before attempting linkage. Additional runs on more datasets should be executed to determine a threshold.
 - This library should serve as a basis to assess additional options to measure and perform linkage of synthetic data. Additional distances, algorithms and metrics can easily be added to it and evaluated.
