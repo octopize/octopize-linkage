@@ -92,6 +92,19 @@ poetry run python analyze_many_pipelines.py
 nix-shell --run 'python analyze_many_linkage.py'
 ```
 
+## Add datasets
+
+The experimental scripts can be used to assess linkage on additional datasets. For each dataset, a data loading function needs to be added to `data_loader.py` and this function should return a dictionary with the data (`df`) and the minimum and maximum number of columns that could be shared (`min_number_of_random_column_in_combinations` and `max_number_of_random_column_in_combinations`). Pre-treatment steps can be added to this function.
+
+Once a loader is created, data can be loaded to be avatarized and linked:
+
+```python
+number_of_records = 1000  # number of records to load (can be useful on large dataset, keep to None to load all the data)
+data = load_dataset(Dataset.MY_NEW_DATASET, number_of_records)
+df = data['df']
+min_number_of_random_column_in_combinations = data['min_number_of_random_column_in_combinations']
+max_number_of_random_column_in_combinations = data['max_number_of_random_column_in_combinations']
+```
 
 ## Documentation :books:
 
