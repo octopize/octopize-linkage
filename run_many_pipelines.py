@@ -34,18 +34,23 @@ client = ApiClient(base_url=url)
 client.authenticate(username=username, password=password)
 
 number_of_random_column_combinations = 10  # per dataset
-dataset_names = [Dataset.STUDENT_DROPOUT, Dataset.STUDENT_PERFORMANCE, Dataset.ADULT, Dataset.PRA]
+# dataset_names = [Dataset.STUDENT_DROPOUT, Dataset.STUDENT_PERFORMANCE, Dataset.ADULT, Dataset.PRA]
+dataset_names = [Dataset.CHESS_GAMES, Dataset.CAREER_CHANGE] #, Dataset.ADULT, Dataset.PRA]
 # dataset_names = [Dataset.PRA]
 dataset_number_of_records = {
     Dataset.ADULT: 10000,
     Dataset.PRA: None,
     Dataset.STUDENT_PERFORMANCE: None,
-    Dataset.STUDENT_DROPOUT: None
+    Dataset.STUDENT_DROPOUT: None,
+    Dataset.CHESS_GAMES: 10000,
+    Dataset.CAREER_CHANGE: 10000
     }
 
-LINK_ORI_AVA = ["avatars", "original"]
+# LINK_ORI_AVA = ["avatars", "original"]
+LINK_ORI_AVA = ["avatars"]
 linkage_algos = [LinkingAlgorithm.LSA] # [LinkingAlgorithm.LSA, LinkingAlgorithm.MIN_ORDER]
-distances = [Distance.GOWER, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+# distances = [Distance.GOWER, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
+distances = [Distance.PROJECTION_DIST_ALL_SOURCES]
 # distances = [Distance.GOWER, Distance.PROJECTION_DIST_FIRST_SOURCE, Distance.PROJECTION_DIST_SECOND_SOURCE, Distance.PROJECTION_DIST_ALL_SOURCES, Distance.ROW_ORDER, Distance.RANDOM]
 
 should_shuffle_before_linkage = True
@@ -107,22 +112,15 @@ for dataset_name in dataset_names:
     combination_dict = {}
     for combination_i, shared_columns in enumerate(random_columns_combinations):
         combination_dict[combination_i] = shared_columns
-    # save combination_dict to text file one line per combination
 
-    with open(f"data/random_column_combinations_{dataset_name.value}_{date}.txt", "w") as f:
-        for key, value in combination_dict.items():
-            f.write(f"{key}\t {value}\n")
-
-    print("combination_dict: ", combination_dict)
-
+    columns1_list = []
+    columns2_list = []
     for combination_i, shared_columns in enumerate(random_columns_combinations):
+
         ################################
         # Split data
         ################################
-        
-        # TODO: fix this - makes it generic (15 only works for PRA and even it's not great)
-        # idea: shuffle col names
-        # split in half
+
         col_names = list(df.columns)
         random.shuffle(col_names)
         number_of_cols = len(col_names)
@@ -131,6 +129,27 @@ for dataset_name in dataset_names:
         # Split data into two sources df1 and df2
         columns1 = set(all_columns[:split_index]).union(set(shared_columns))
         columns2 = set(all_columns[split_index:]).union(set(shared_columns))
+
+        columns1_list.append(columns1)
+        columns2_list.append(columns2)
+
+    with open(f"data/random_column_combinations_{dataset_name.value}_{date}.txt", "w") as f:
+        ii = 0
+        for key, value in combination_dict.items():
+            f.write(f"{key}\t {value}, {columns1_list[ii]}, {columns2_list[ii]}\n")
+            ii += 1
+
+    print("combination_dict: ", combination_dict)
+
+
+    for combination_i, shared_columns in enumerate(random_columns_combinations):
+
+        ################################
+        # Split data
+        ################################
+        
+        columns1 = columns1_list[combination_i]
+        columns2 = columns2_list[combination_i]
 
         df1 = df[list(columns1)].copy()
         df2 = df[list(columns2)].copy()
@@ -278,7 +297,7 @@ for dataset_name in dataset_names:
                     reconstruction_stats = get_reconstruction_score(df, linked_df)
 
                     # plots
-                    plt = plot_correlations(corr_records, corr_avatars, title=f"{linkage_algo.value} / {distance.value}")
+                    plt = plot_correlations(corr_records, corr_avatars, title=f"{linkage_algo.value} / {distance.value} / {dataset_name.value}")
                     plt.savefig(f"data/{dataset_name.value}_linked_data__avatar__{linkage_algo.value}__{distance.value}_correlations.png")
 
                     proj_original, proj_linked = get_non_shared_var_projections(df, linked_df, list(_columns1), list(_columns2))

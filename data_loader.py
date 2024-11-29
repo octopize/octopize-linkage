@@ -107,14 +107,6 @@ def load_chess_games():
             # add string suffix to values to ensure the value is not treated as bool
             df[col] = df[col].astype(str) + "_"
 
-    # # get correlations
-    # df_dummies = pd.get_dummies(df)
-    # print(df_dummies.columns)
-    # corr_o = df_dummies.corr()
-    # # corr_o, _, _ = get_correlations(df, df, df.columns, df.columns)
-    # plt = plot_correlations(corr_o, corr_o, "original correlation in chess games dataset")
-    # plt.savefig(f"data/chess_games_original_correlations.png")
-
     return {
         'df': df,
         'min_number_of_random_column_in_combinations': 2,

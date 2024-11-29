@@ -13,9 +13,6 @@ df = pd.read_csv("data/pra_2023.csv")
 # drop IDs and constant columns
 df = df.drop(columns=['household_number', 'survey_year', 'rowid', 'matricule'])
 
-# replace comma by dot in column elevator
-# df['elevator'] = df['elevator'].str.replace(',', '.').astype(float)
-
 ################################
 # Split data
 ################################

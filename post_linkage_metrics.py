@@ -26,9 +26,6 @@ def plot_correlations(corr_original, corr_avatars, title: str = None):
     im = ax2.imshow(corr_avatars, vmin=vmin, vmax=vmax, cmap='bwr')
     ax2.set_title('Avatarized Data')
 
-    # share legend
-
-
     # add legend
     # plt.colorbar(ax1.imshow(corr_original))
     # plt.colorbar(ax2.imshow(corr_avatars))
@@ -41,9 +38,6 @@ def plot_correlations(corr_original, corr_avatars, title: str = None):
     if title:
         plt.suptitle(title)
 
-
-    # plt.show()
-    
     return plt
 
 def get_correlations(
@@ -129,9 +123,6 @@ def generate_projection_plot(data_ori, data_linked, title: str = None):
     # im = ax2.imshow(data_linked[["Dim. 1", "Dim. 2"]], cmap='bwr')
     ax2.set_title('Linked Data')
 
-    # share legend
-
-
     # add legend
     # plt.colorbar(ax1.imshow(corr_original))
     # plt.colorbar(ax2.imshow(corr_avatars))
@@ -143,9 +134,6 @@ def generate_projection_plot(data_ori, data_linked, title: str = None):
     # set title
     if title:
         plt.suptitle(title)
-
-
-    # plt.show()
     
     return plt
 
@@ -159,8 +147,6 @@ def get_non_shared_var_projections(df: pd.DataFrame, linked_records: pd.DataFram
     
     df = df.copy()
     linked_records = linked_records.copy()
-
-
 
     # Add (if required) columns indicating if a variable was missing
     if should_consider_missing:
@@ -208,7 +194,6 @@ def get_non_shared_var_projections(df: pd.DataFrame, linked_records: pd.DataFram
     )
     df_proj = saiph.transform(df_filtered, model_ori)
 
-
     if separate_models:
         model_linked = saiph.fit(
             linked_records_filtered, nf=None
@@ -218,7 +203,6 @@ def get_non_shared_var_projections(df: pd.DataFrame, linked_records: pd.DataFram
         linked_proj = saiph.transform(linked_records_filtered, model_ori)
 
     return df_proj, linked_proj
-
 
 # Function to convert values back to their original types
 def convert_value(value, dtype):
@@ -273,7 +257,6 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
     # convert all values in categorical variables of linked_reconstructed to str. This is because
     # we may have different value types in the dataframes to compare following the inverse_transform
     original_dtypes  = df.dtypes
-    # print('original_dtypes: ', original_dtypes)
 
     for col in df.select_dtypes(include=['object_']).columns:
         df[col] = df[col].apply(lambda x: convert_value(x, original_dtypes[col]))
@@ -336,7 +319,6 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
         diagonal_values_linked = np.diag(distances_linked)  # Get diagonal values from distances
         all_diagonal_values_linked.extend(diagonal_values_linked)
 
-    # reconstruction_diff = abs(all_diagonal_values - all_diagonal_values_linked)
     reconstruction_diff = [abs(x - y) for x, y in zip(all_diagonal_values, all_diagonal_values_linked)]
 
     reconstruction_diff_sum = sum(reconstruction_diff)
@@ -344,10 +326,6 @@ def get_reconstruction_score(df: pd.DataFrame, linked_records: pd.DataFrame, nb_
     reconstruction_diff_std = np.std(reconstruction_diff)
     reconstruction_diff_max = np.max(reconstruction_diff)
 
-
-    # reconstruction_error_original = np.mean(all_diagonal_values)
-    # reconstruction_error_linked = np.mean(all_diagonal_values_linked)
-    # metric = abs(reconstruction_error_original - reconstruction_error_linked)
     return {
         'reconstruction_diff_sum': reconstruction_diff_sum,
         'reconstruction_diff_mean': reconstruction_diff_mean,

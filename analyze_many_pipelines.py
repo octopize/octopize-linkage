@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 file_path = "data/many_pipeline_stats_20241120_170813.csv"  # full results
 # file_path = "data/many_sizes_stats_20241121_144048.csv"  # many sizes only 
 
-post_linkage_metric = "correlation_difference_mean"
-# post_linkage_metric = "reconstruction_difference_mean"
+# post_linkage_metric = "correlation_difference_mean"
+post_linkage_metric = "reconstruction_difference_mean"
 
 pre_linkage_metrics = "unicity_score1"
 # pre_linkage_metrics = "contribution_score1"
@@ -58,6 +58,20 @@ datasets = stats_df['dataset'].unique()
 # plt.show()
 
 
+
+
+##########################################
+### Questions asked?
+### - is there a correlation between the the two pre-linkage scores?
+##########################################
+
+# data = stats_df
+# plt.figure(figsize=(10, 6))
+# sns.scatterplot(data=data, x='unicity_score1', y='contribution_score1')
+# plt.xlabel('Unicity score')
+# plt.ylabel('Contribution score')
+# plt.title('Unicity score vs. Contribution score')
+# plt.show()
 
 
 
@@ -161,8 +175,8 @@ print(proportion_above_threshold)
 
 
 
-# ava_ori = 'avatars'
-ava_ori = 'original'
+ava_ori = 'avatars'
+# ava_ori = 'original'
 
 # Create subplot for each dataset with a boxplot using stats_df showing post_linkage_metric for each mean_unicity_score_bin and method
 ncols = 2
@@ -232,8 +246,6 @@ plt.show()
 
 
 
-assert False
-
 
 # Create a histogram where x is the mean unicity score (by bins of 10) and y is the number of data points avove the threshold
 THRESHOLD = 0.1
@@ -255,9 +267,6 @@ plt.suptitle(f'Number of linkages with {post_linkage_metric} < {THRESHOLD} for d
 
 plt.tight_layout()
 plt.show()
-
-
-assert False
 
 
 
@@ -444,18 +453,7 @@ plt.show()
 
 
 
-##########################################
-### Questions asked?
-### - is there a correlation between the the two pre-linkage scores?
-##########################################
 
-data = stats_df
-plt.figure(figsize=(10, 6))
-sns.scatterplot(data=data, x='unicity_score1', y='contribution_score1', hue='distance')
-plt.xlabel('Unicity score')
-plt.ylabel('Contribution score')
-plt.title('Unicity score vs. Contribution score')
-plt.show()
 
 
 ##########################################

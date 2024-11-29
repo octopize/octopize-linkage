@@ -70,7 +70,6 @@ def link_datasets(
         LinkingAlgorithm, Callable[[NDArray[np.float64]], Tuple[List[int], List[int]]]
     ] = {
         LinkingAlgorithm.LSA: _solve_linear_sum_assignment,
-        # "min_weight_full_bipartite_matching": _solve_min_weight_full_bipartite_matching,
         LinkingAlgorithm.MIN_ORDER: _solve_min_order,
         LinkingAlgorithm.MIN_REORDER: _solve_min_reorder,
     }
@@ -117,13 +116,6 @@ def _compute_gower_distances(
 ) -> NDArray[np.float64]:
     df1 = df1.copy()
     df2 = df2.copy()
-    
-    # if len(df1) == 1:
-    #     differences = df1.compare(df2, keep_equal=False)
-    #     print("OHHHH: ", differences)
-    #     print('ADiff: ', differences.iloc[1].reset_index(drop=False))
-    #     print('ADiff self: ', type(differences.iloc[0].reset_index(drop=False).iloc[0][1]))
-    #     print('ADiff other: ', type(differences.iloc[0].reset_index(drop=False).iloc[1][1]))
 
     dfs = _handle_missing_values([df1[linkage_var], df2[linkage_var]])
     
@@ -140,23 +132,14 @@ def _compute_gower_distances(
 
     # Extract categorical column indices for gower - required to ensure categorical variables
     # with nan values are considered as categorical
-    # _, categorical = split_column_types(df1[linkage_var])
     categorical: List[str] = df1[linkage_var].select_dtypes(
         include=_CATEGORICAL_DTYPES,
     ).columns.to_list()
     cat_features = [col in categorical for col in df1[linkage_var].columns]
     
-    # print('categorical:', categorical)
-    # print('cat_features:', cat_features)
-
-    # print(data_x[1])
-    # print(data_y[1])
-    
     distances: NDArray[np.float64] = gower.gower_matrix(
         data_x=data_x, data_y=data_y, cat_features=cat_features
     )
-
-    # print(distances)
 
     return distances
 
@@ -259,22 +242,14 @@ def _solve_min_order(distances: NDArray[np.float64]) -> Tuple[List[int], List[in
     # Order once records in order of min distance to another record, then assign
     # to closest record, respecting this order (greedy)
     min_values = [(i, min(distances[i])) for i in range(len(distances))]
-    # print('min_values:', min_values)
     min_values = sorted(min_values, key=lambda tup: (tup[1]))
-    # print('min_values_sorted:', min_values)
     insertion_order = [x[0] for x in min_values]
-    # print('insertion_order:', insertion_order)
 
-    # row_ind = set()
-    # col_ind = set()
     row_ind = []
     col_ind = []
     max_val = math.ceil(np.max(distances) + 1.0)
     for i in range(np.shape(distances)[1]):
-        # print('---------------')
-        # print(i, len(col_ind))
         row_ind.append(insertion_order[i])
-        # print(insertion_order[i])
 
         # replace already drawn columns with max value
         col_ind_as_set = set(col_ind)
@@ -282,13 +257,11 @@ def _solve_min_order(distances: NDArray[np.float64]) -> Tuple[List[int], List[in
             distances[insertion_order[i]][j] if (j not in col_ind_as_set) else max_val
             for j in range(len(distances[insertion_order[i]]))
         ]
-        # print('tmp:', tmp)
+        
         # draw column with minimum distance
         val = np.argmin(tmp)
-        # print('val:', val)
         col_ind.append(val)
-        # if i ==4:
-        #     break
+
     return list(row_ind), list(col_ind)  # type: ignore
 
 
