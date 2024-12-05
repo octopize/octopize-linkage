@@ -20,7 +20,7 @@ We can expect that
 #### Unicity scores
 
 Based on the variables present in each datasets and in particular their cardinality, the unicity scores differ across datasets.The unicity score can be defined as a measure of how unique an individual or record is in a dataset.
-
+#### Graph 1
 ![image info](../img/unicity_scores_per_dataset.png)
 
 **Interpretation:**
@@ -31,7 +31,7 @@ Based on the variables present in each datasets and in particular their cardinal
 
 ## Results with k=10
 
-#### Graph 1: Correlation differences
+#### Graph 2: Correlation differences
 ![image info](../img/correlation_differences_per_dataset.png)
 
 **Interpretation:**
@@ -39,7 +39,7 @@ Based on the variables present in each datasets and in particular their cardinal
 - Across all datasets, *lsa + euclidean distance in a projected space* is the method giving the best results (i.e. correlation difference is the lowest, which means less distortion of the data’s structure before the linkage) and gives the most stable results.
 
 
-#### Graph 2: Correlation differences (for high unicity scores only)
+#### Graph 3: Correlation differences (for high unicity scores only)
 ![image info](../img/correlation_differences_per_dataset_high_unicity_scores.png)
 
 **Interpretation:**
@@ -53,7 +53,7 @@ An acceptable level of correlation difference between original and sythetic link
 
 As a generic threshold, it is often considered that a difference lower than 0.1 is acceptable. For illustration purpose, we use 0.1 as a threshold when showing maximum correlation differences and we use 0.05 for mean correlation differences.
 
-#### Graph 3: Mean correlation differencesv for avatars's differerent level of unicity score
+#### Graph 4: Mean correlation differencesv for avatars's differerent level of unicity score
 ![image info](../img/corr_mean_vs_unicity_bins_avatars.png)
 
 **Interpretation:**
@@ -61,7 +61,7 @@ As a generic threshold, it is often considered that a difference lower than 0.1 
 - Linked avatars yields acceptable mean correlation difference
 
 
-#### #### Graph 4: Max Correlation differences for differerent level of unicity score
+#### #### Graph 5: Max Correlation differences for differerent level of unicity score
 ![image info](../img/corr_max_vs_unicity_bins_avatars.png)
 
 **Interpretation:**
@@ -72,20 +72,20 @@ As a generic threshold, it is often considered that a difference lower than 0.1 
 - The likely reason behind this is that with some data splits, a variable globally correlated with another becomes completely uncorrelated and independent in its own split. Anonymization of the split alters this variable independently and global correlation is lost. There is no way such correlation can be restored at linkage. Note that this does not happen when a variable is globally correlated with several other variables because such variables would not become independent when the data is split.
 - Changing anonymization parameters does not help (not shown here but similar results in terms of maximum correlation differences are obtained when using k=3 instead of k=10 in avatar)
 
-#### Graph 5
-![image info](../img/pra_linked_data__avatar__lsa__proj_eucl_all_source_correlations.png)
 #### Graph 6
-![image info](../img/pra_linked_data__avatar__lsa__row_order_correlations.png)
+![image info](../img/pra_linked_data__avatar__lsa__proj_eucl_all_source_correlations.png)
 #### Graph 7
-![image info](../img/pra_linked_data__avatar__lsa__gower_correlations.png)
+![image info](../img/pra_linked_data__avatar__lsa__row_order_correlations.png)
 #### Graph 8
+![image info](../img/pra_linked_data__avatar__lsa__gower_correlations.png)
+#### Graph 9
 ![image info](../img/pra_linked_data__avatar__lsa__random_correlations.png)
 
 
 
 ## Can we predict post-linkage results from pre-linkage metrics ?
 
-#### Graph 9: Correlation between Unicity score (pre-metric) and correlation difference (post-metric)
+#### Graph 10: Correlation between Unicity score (pre-metric) and correlation difference (post-metric)
 ![image info](../img/pre-post-unicity-corr_diff-bestmethod-only.png)
 
 **Interpretation:**
@@ -93,7 +93,7 @@ As a generic threshold, it is often considered that a difference lower than 0.1 
 - The correlation can be observed on avatar linkage on adult and pra.
 
 
-#### #### Graph 10: Correlation between Contribution score (pre-metric) and correlation difference (post-metric)
+#### #### Graph 11: Correlation between Contribution score (pre-metric) and correlation difference (post-metric)
 ![image info](../img/pre-post-contribution-corr_diff-bestmethod-only.png)
 
 **Interpretation:**
@@ -104,9 +104,9 @@ As a generic threshold, it is often considered that a difference lower than 0.1 
 
 To study the impact of the number of records, we use the two largest datasets and sample them (with seeds) to obtain datasets of respective size 10000, 5000, 1000 and 500 on which avatarization and linkage by means of *lsa + euclidean distance in a projected space*.
 
-#### Graph 11
-![image info](../img/number_of_records.png)
 #### Graph 12
+![image info](../img/number_of_records.png)
+#### Graph 13
 ![image info](../img/number_of_records_with_regression_lines.png)
 
 **Interpretation:**
