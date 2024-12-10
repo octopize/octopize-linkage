@@ -1,0 +1,46 @@
+project:
+  type: book
+
+book:
+  title: "Final report"
+  author: "Octopize-MESR-LNDS"
+  date: "12/10/2024"
+  chapters:
+    - index.md
+    - anonymization_privacy.md
+    - prelinkage_metrics.md
+    - linkage_methods.md
+    - postlinkage_metrics.md
+    - experiments.md
+    - future_work.md
+
+format:
+  pdf:
+    documentclass: scrbook
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of contents"
+    lof: true
+    lot: true
+    number-sections: true
+    number-depth: 2
+    papersize: a4
+    geometry:
+      - inner=3cm
+      - outer=4cm
+      - top=3cm
+      - bottom=4cm
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+      - heightrounded
+    include-in-header:
+      text: |
+        \usepackage{graphicx} % Ensure graphicx is loaded
+        \let\oldincludegraphics\includegraphics
+        \renewcommand{\includegraphics}[2][]{%
+          \oldincludegraphics[width=\textwidth, #1]{#2}%
+        }
+    fig-pos: 'H'
