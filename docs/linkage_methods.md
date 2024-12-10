@@ -1,10 +1,12 @@
 # Linkage methods
 
-This page describes the different approaches available to perform linkage between two data sources.
+This page describes the different approaches available to perform linkage
+between two data sources.
 
 ## Concept
 
-Linkage of datasets requires two main components: a notion of distance between two records and an algorithm to associate records from A to records from B.
+Linkage of datasets requires two main components: a notion of distance between
+two records and an algorithm to associate records from A to records from B.
 
 ## Distances
 

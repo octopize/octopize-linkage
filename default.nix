@@ -9,7 +9,10 @@ let
       (fetchTarball "https://github.com/NixOS/nixpkgs/archive/f79961ac201f457f810957c8f4275610cd329a0d.tar.gz")
       { };
 
-  # Common python dependencies to use in my intermediary inputs
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) scheme-small amsmath framed fvextra environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;
+  });
+
   python_pkgs = pkgs.python312.withPackages (ps: with ps; [
     pandas
     saiph
@@ -19,8 +22,10 @@ let
     numpy
     gower
     octopize_avatar
-    ]);
+  ]);
+
 in
+
 pkgs.mkShell {
   LOCALE_ARCHIVE = if pkgs.system == "x86_64-linux" then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
   LANG = "en_US.UTF-8";
@@ -30,6 +35,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ python_pkgs quarto_source.quarto ];
+  buildInputs = [ python_pkgs quarto_source.quarto tex ];
   
 }
