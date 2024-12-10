@@ -1,0 +1,18 @@
+project:
+  title: "Documentation"
+  format:
+    docx:
+      toc: true
+      number-sections: true
+      highlight-style: github
+  render:
+    - intro.md
+    - anonymization_privacy.md
+    - prelinkage_metrics.md
+    - linkage_methods.md
+    - postlinkage_metrics.md
+    - experiments.md
+    - future_work.md
+
+
+

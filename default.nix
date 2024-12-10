@@ -4,6 +4,11 @@ let
       (fetchTarball "https://github.com/b-rodrigues/nixpkgs/archive/d4f50d7ecf7b25cc6f52638cc53231e6bd0dcf64.tar.gz")
       { };
 
+  quarto_source =
+    import
+      (fetchTarball "https://github.com/NixOS/nixpkgs/archive/f79961ac201f457f810957c8f4275610cd329a0d.tar.gz")
+      { };
+
   # Common python dependencies to use in my intermediary inputs
   python_pkgs = pkgs.python312.withPackages (ps: with ps; [
     pandas
@@ -25,6 +30,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [ python_pkgs ];
+  buildInputs = [ python_pkgs quarto_source.quarto ];
   
 }
