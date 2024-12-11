@@ -108,5 +108,5 @@ max_number_of_random_column_in_combinations = data['max_number_of_random_column_
 
 ## Documentation :books:
 
-The [documentation](./docs/intro.md) is available in `\docs`.
+The [documentation](./docs/index.md) is available in `\docs`.
 
