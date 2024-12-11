@@ -2,6 +2,7 @@
 
 Because post-linkage metrics rely on accessing the original un-split data, they
 are only suitable to specific contexts:
+
 - experimental context where the data is purposely split under different
   scenarios to study the performance of linkage solutions or to develop new
   ones. This is the context in which results presented in
