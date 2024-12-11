@@ -1,7 +1,6 @@
 # Anonymization and privacy
 
-This page describes how data can be anonymized with the avatar solution and what
-linkage means in terms of privacy.
+This page describes how data can be anonymized with the avatar solution and what does it meant to link two anonymized datasets in terms of privacy.
 
 ## Anonymization with the avatar solution
 
@@ -13,9 +12,7 @@ In this latter context, the typical pipeline would go as follows:
 
 ![Base pipeline](../img/base_pipeline.png)
 
-[Avatar](https://docs.octopize.io/) is an anonymization solution developed by
-Octopize that produces data respecting GDPR criteria: singling-out, linkability
-and inference.
+[Avatar](https://docs.octopize.io/) is an anonymization solution developed by Octopize that produces data respecting GDPR criteria in terms of addressing: singling-out, linkability, and inference. 
 
 The solution is available on SaaS and on-Premise. Scripts demonstrating the full
 pipeline make use of the SaaS version.
@@ -34,9 +31,7 @@ confirmed by privacy metrics. The metrics covers the 3 GDPR criteria as
 described in details
 [here](https://docs.octopize.io/docs/understanding/Privacy#evaluation-criteria).
 
-Privacy metrics confirm that it is impossible to re-identify an individual in
-the data (singling-out), to link individual from the dataset with data from
-another source and to infer sensitive information from the data.
+Privacy metrics confirm that it should not be possible to re-identify an individual in the data (singling-out), to link individual from the dataset with data from another source and to infer sensitive information from the data.
 
 ### Linkage and GDPR linkability criteria
 
