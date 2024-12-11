@@ -2,13 +2,26 @@
 
 ## Differences between the selected datasets
 
-#### Dataset sizes
-The number of rows in a dataset is a property which may be important when interpreting results because it probably has an impact on the linkage process. This is especially true because the proposed linkage solutions are approximative: the aim of the linkage process is not to link individual 1 from source A with individual 1 from source B but instead to link individual 1 from source A with another individual from source B in such way that the global statistical properties of the datasets are preserved.
+### Dataset sizes
 
-We can expect that 
-- linkage on a few individuals/records is less tolerant to approximation: for linkage of a given individual at source A, there are less candidate at source B than on datasets with a lot of individuals. 
-- Also, a proper anonymization method (such as avatar) will modify to a greater extent individuals from a small dataset than from a large dataset (i.e. many individuals).
-- **It is expected that linkage of larger datasets (in terms of number of individuals) should preserve better the global statistical properties.**
+The number of rows in a dataset is a property which may be important when
+interpreting results because it probably has an impact on the linkage process.
+This is especially true because the proposed linkage solutions are
+approximative: the aim of the linkage process is not to link individual 1 from
+source A with individual 1 from source B but instead to link individual 1 from
+source A with another individual from source B in such way that the global
+statistical properties of the datasets are preserved.
+
+We can expect that:
+
+- linkage on a few individuals/records is less tolerant to approximation: for
+  linkage of a given individual at source A, there are less candidate at source
+  B than on datasets with a lot of individuals.
+- Also, a proper anonymization method (such as avatar) will modify to a greater
+  extent individuals from a small dataset than from a large dataset (i.e. many
+  individuals).
+- **It is expected that linkage of larger datasets (in terms of number of
+  individuals) should preserve better the global statistical properties.**
 
 | Dataset    | Number of individuals |
 | ---------- | --------------------- |
@@ -17,37 +30,54 @@ We can expect that
 | adult    | 10000 (out of 48842)    |
 | pra    | 12430    |
 
-#### Unicity scores
+### Unicity scores
 
-Based on the variables present in each datasets and in particular their cardinality, the unicity scores differ across datasets.The unicity score can be defined as a measure of how unique an individual or record is in a dataset.
+Based on the variables present in each datasets and in particular their
+cardinality, the unicity scores differ across datasets.The unicity score can be
+defined as a measure of how unique an individual or record is in a dataset.
 
 ![image info](../img/unicity_scores_per_dataset.png)
 
 **Interpretation:**
-- Unicity score can be very high on student_dropout and student_performance datasets. This is caused by the smaller size of these two datasets in comparison with the other datasets because it’s more likely that some individuals have unique traits not shared by others in a smaller dataset, resulting in a higher unicity score. Unicity score should be considered alongside number of records. 
-- Because they are the datasets with the fewest individuals, the anonymization should also yield more differences to the original data (this should be seen on the assessment of the avatars linkage).
 
-
+- Unicity score can be very high on student_dropout and student_performance
+  datasets. This is caused by the smaller size of these two datasets in
+  comparison with the other datasets because it’s more likely that some
+  individuals have unique traits not shared by others in a smaller dataset,
+  resulting in a higher unicity score. Unicity score should be considered
+  alongside number of records.
+- Because they are the datasets with the fewest individuals, the anonymization
+  should also yield more differences to the original data (this should be seen
+  on the assessment of the avatars linkage).
 
 
 ## Results with k=10
 
-#### Correlation differences
+### Correlation differences
 ![image info](../img/correlation_differences_per_dataset.png)
 
 **Interpretation:**
-- The previous graph shows the performance of a set of linkage methods applied to link the two subsets of the original dataset (bottom panel) after splitting it and on the avatrized version of these two subsets (top panel).
-- Across all datasets, *lsa + euclidean distance in a projected space* is the method giving the best results (i.e. correlation difference is the lowest, which means less distortion of the data’s structure before the linkage) and gives the most stable results.
+
+- The previous graph shows the performance of a set of linkage methods applied
+  to link the two subsets of the original dataset (bottom panel) after splitting
+  it and on the avatrized version of these two subsets (top panel).
+- Across all datasets, *lsa + euclidean distance in a projected space* is the
+  method giving the best results (i.e. correlation difference is the lowest,
+  which means less distortion of the data’s structure before the linkage) and
+  gives the most stable results.
 
 
-#### Correlation differences (for high unicity scores only)
+### Correlation differences (for high unicity scores only)
+
 ![image info](../img/correlation_differences_per_dataset_high_unicity_scores.png)
 
 **Interpretation:**
-- When the unicity score is high (e.g. > 0.5), the linkage with the best method is of similar or comparable quality to *row_order*, which matches datasets based on the original order of the rows. It can even outperform *row_order*.
+- When the unicity score is high (e.g. > 0.5), the linkage with the best method
+  is of similar or comparable quality to *row_order*, which matches datasets
+  based on the original order of the rows. It can even outperform *row_order*.
 
 
-#### Mean correlation differences for differerent level of unicity score
+### Mean correlation differences for differerent level of unicity score
 
 An acceptable level of correlation difference between original and synthetic
 linked data is difficult to define as it depends on the context and how the data
@@ -58,7 +88,8 @@ is acceptable. For illustration purpose, we use 0.1 as a threshold when showing
 maximum correlation differences and we use 0.05 for mean correlation
 differences.
 
-#### Mean correlation differencesv for avatars's differerent level of unicity score
+### Mean correlation differencesv for avatars's differerent level of unicity score
+
 ![image info](../img/corr_mean_vs_unicity_bins_avatars.png)
 
 **Interpretation:**
@@ -66,11 +97,12 @@ differences.
   strongly depends on the dataset.
 - Linked avatars yields acceptable mean correlation difference
 
+### Max Correlation differences for differerent level of unicity score
 
-#### Max Correlation differences for differerent level of unicity score
 ![image info](../img/corr_max_vs_unicity_bins_avatars.png)
 
 **Interpretation:**
+
 - Maximum difference in correlation are not below the threshold and it is
   expected that some pairwise correlations will be altered.
 - However, looking at one run of the best method on pra, we see that only a few
@@ -90,21 +122,19 @@ differences.
   results in terms of maximum correlation differences are obtained when using
   k=3 instead of k=10 in avatar)
 
-
 ![image info](../img/pra_linked_data__avatar__lsa__proj_eucl_all_source_correlations.png)
 ![image info](../img/pra_linked_data__avatar__lsa__row_order_correlations.png)
 ![image info](../img/pra_linked_data__avatar__lsa__gower_correlations.png)
 ![image info](../img/pra_linked_data__avatar__lsa__random_correlations.png)
 
-
-
 ## Can we predict post-linkage results from pre-linkage metrics ?
 
-#### Correlation between Unicity score (pre-metric) and correlation difference (post-metric)
+### Correlation between Unicity score (pre-metric) and correlation difference (post-metric)
 
 ![image info](../img/pre-post-unicity-corr_diff-bestmethod-only.png)
 
 **Interpretation:**
+
 - The trend (correlation) between pre and post linkage metrics is clear when
   linking subsets of the original data
 - The correlation can be observed on avatar linkage on adult and pra.
@@ -119,16 +149,15 @@ differences.
   contribution score. Focusing on pra and adult where a correlation is observed
   on unicity score, we see that this is not the case here.
 
-
-### Impact of dataset size on linkage of avatars
+## Impact of dataset size on linkage of avatars
 
 To study the impact of the number of records, we use the two largest datasets
 and sample them (with seeds) to obtain datasets of respective size 10000, 5000,
 1000 and 500 on which avatarization and linkage by means of *lsa + euclidean
 distance in a projected space*.
 
-![image info](../img/number_of_records.png)
-![image info](../img/number_of_records_with_regression_lines.png)
+![image info](../img/number_of_records.png) ![image
+info](../img/number_of_records_with_regression_lines.png)
 
 **Interpretation:**
 - The more records, the closer to original. This is an expected findings: more
@@ -137,7 +166,8 @@ distance in a projected space*.
 
 ## Take-home messages
 
-- Unicity score should be combined with number of records to decide whether linkage could be performed.
+- Unicity score should be combined with number of records to decide whether
+  linkage could be performed.
 - Mean correlation difference is a post-linkage that can be used.
 - When having sufficient number of records (i.e. > 5000), unicity score is
   correlated to post-linkage metric and so should be maximised.

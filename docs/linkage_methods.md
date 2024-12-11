@@ -120,11 +120,13 @@ requires significantly more resources.
 
 ## Baseline algorithms
 
-To understand the performance of the different linkage options, two baseline linkage methods are available.
+To understand the performance of the different linkage options, two baseline
+linkage methods are available.
 
 ### Row order linkage
 
-Row order linkage between two sources A and B will allocate the $i$-th individual from A to the $i$-th individual from B.
+Row order linkage between two sources A and B will allocate the $i$-th
+individual from A to the $i$-th individual from B.
 
 $$
 M = \begin{bmatrix}
@@ -146,4 +148,5 @@ considered as good.
 
 ### Random linkage
 
-To compare linkage solutions, a random linkage approach is made available. Its results will represent a lower bound. 
+To compare linkage solutions, a random linkage approach is made available. Its
+results will represent a lower bound.
