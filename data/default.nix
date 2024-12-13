@@ -3,11 +3,15 @@ let
   
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
+      broom
       dplyr
-      targets
+      ggplot2
+      gt
+      janitor
       readr
       stringr
-      janitor;
+      targets
+      tidyr;
   };
    
   system_packages = builtins.attrValues {
